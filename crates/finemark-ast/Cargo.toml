@@ -1,0 +1,19 @@
+[package]
+name = "finemark-ast"
+version.workspace = true
+authors.workspace = true
+repository.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "AST types for the FineMark markup language"
+readme = "README.md"
+keywords.workspace = true
+categories.workspace = true
+
+[dependencies]
+serde.workspace = true
+
+[features]
+default = []
+include-locations = []

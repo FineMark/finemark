@@ -1,0 +1,34 @@
+[package]
+name = "finemark-parser"
+version.workspace = true
+authors.workspace = true
+repository.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Core parsing engine for the FineMark markup language"
+readme = "README.md"
+keywords.workspace = true
+categories.workspace = true
+
+[dependencies]
+# Internal crates
+finemark-ast.workspace = true
+
+# External dependencies
+winnow.workspace = true
+paste.workspace = true
+serde_json.workspace = true
+memchr.workspace = true
+
+[features]
+default = []
+include-locations = ["finemark-ast/include-locations"]
+
+# [[example]]
+# name = "gen_expected"
+# required-features = ["include-locations"]
+
+# [[test]]
+# name = "comprehensive_parser_tests"
+# required-features = ["include-locations"]
