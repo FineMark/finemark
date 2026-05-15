@@ -2,8 +2,11 @@
   <img src="assets/finemark_banner.png" alt="FineMark" width="100%">
 </p>
 
-# finemark
-A clean markup language
+<h1 align="center">FineMark</h1>
+
+<p align="center">
+  A clean markup language
+</p>
 
 ## License
 
