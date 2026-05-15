@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/finemark_banner.png" alt="FineMark" width="100%">
+</p>
+
 # finemark
 A clean markup language
 
