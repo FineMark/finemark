@@ -1,4 +1,4 @@
-# finemark-spec
+# finemark
 A clean markup language
 
 ## License
