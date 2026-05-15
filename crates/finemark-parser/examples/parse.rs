@@ -1,4 +1,4 @@
-use sevenmark_parser::core::parse_document;
+use finemark_parser::core::parse_document;
 use std::fs;
 use std::time::Instant;
 
