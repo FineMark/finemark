@@ -69,6 +69,13 @@ impl ParseContext {
         self.max_recursion_depth
             .saturating_sub(self.recursion_depth)
     }
+
+    pub fn next_section_index(&mut self) -> usize {
+        let idx = self.section_counter;
+        self.section_counter += 1;
+        idx
+    }
+
     pub fn replace_block_mode(&mut self, mode: BlockMode) -> BlockMode {
         let previous = self.block_mode;
         self.block_mode = mode;
