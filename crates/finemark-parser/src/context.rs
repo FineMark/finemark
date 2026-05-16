@@ -47,7 +47,7 @@ impl ParseContext {
             return Err(FineMarkError::RecursionDepthExceeded {
                 depth: new_depth,
                 max_depth: self.max_recursion_depth,
-            })
+            });
         }
         self.recursion_depth = new_depth;
         Ok(())
@@ -63,5 +63,34 @@ impl ParseContext {
 
     pub fn current_depth(&self) -> usize {
         self.recursion_depth
+    }
+
+    pub fn remaining_depth(&self) -> usize {
+        self.max_recursion_depth
+            .saturating_sub(self.recursion_depth)
+    }
+    pub fn replace_block_mode(&mut self, mode: BlockMode) -> BlockMode {
+        let previous = self.block_mode;
+        self.block_mode = mode;
+        previous
+    }
+
+    pub fn is_guard_active(&self, guard: ParseGuard) -> bool {
+        self.guard_stack.contains(&guard)
+    }
+
+    pub fn enter_guard(&mut self, guard: ParseGuard) {
+        self.guard_stack.push(guard);
+    }
+
+    pub fn exit_guard(&mut self, guard: ParseGuard) {
+        let popped = self.guard_stack.pop();
+        debug_assert_eq!(
+            popped,
+            Some(guard),
+            "guard stack mismatch: expected to pop {:?}, got {:?}",
+            guard,
+            popped,
+        );
     }
 }
