@@ -2,7 +2,7 @@
   <img src="assets/finemark_banner.png" alt="FineMark" width="100%">
 </p>
 
-<p align="center">FineMark is a clean markup language for structured documents.</p>
+<p align="center">Write structured documents, cleanly.</p>
 
 <p align="center">
   <a href="https://github.com/FineMark/finemark/blob/main/LICENSE-APACHE">
