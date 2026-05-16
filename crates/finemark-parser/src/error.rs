@@ -19,7 +19,7 @@ impl fmt::Display for FineMarkError {
 impl std::error::Error for FineMarkError {}
 
 impl FineMarkError {
-    /// FineMarkError를 winnow::error::ContextError로 변환
+    /// Converts `FineMarkError` into a `winnow::error::ContextError`.
     pub fn into_context_error(self) -> ContextError {
         ContextError::new()
     }

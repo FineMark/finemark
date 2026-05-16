@@ -30,7 +30,7 @@ pub struct ParseContext {
 }
 
 impl ParseContext {
-    // new context
+    // Creates the default parser context for a top-level document parse.
     pub fn new() -> Self {
         Self {
             recursion_depth: 0,

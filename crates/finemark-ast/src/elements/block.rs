@@ -1,54 +1,41 @@
-use crate::Span;
+use crate::{Element, Span};
 use serde::Serialize;
 
-// === Text-carrying leaf nodes ===
 #[derive(Debug, Clone, Serialize)]
-pub struct TextElement {
+pub struct HeadingElement {
     #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub span: Span,
-    pub value: String,
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
+    pub marker_span: Span,
+    pub level: u8,
+    pub is_folded: bool,
+    pub section_index: usize,
+    pub children: Vec<Element>,
 }
 
 #[derive(Debug, Clone, Serialize)]
-pub struct CommentElement {
+pub struct BlockQuoteElement {
     #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub span: Span,
-    pub value: String,
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
+    pub marker_spans: Vec<Span>,
+    pub children: Vec<Element>,
 }
 
 #[derive(Debug, Clone, Serialize)]
-pub struct EscapeElement {
+pub struct HLineElement {
     #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub span: Span,
-    pub value: String,
 }
 
 #[derive(Debug, Clone, Serialize)]
-pub struct ErrorElement {
-    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
-    pub span: Span,
-    pub value: String,
-}
-
-#[derive(Debug, Clone, Serialize)]
-pub struct CodeElement {
+pub struct CodeBlockElement {
     #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub span: Span,
     #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub open_span: Span,
     #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub close_span: Span,
-    pub value: String,
-}
-
-#[derive(Debug, Clone, Serialize)]
-pub struct TeXElement {
-    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
-    pub span: Span,
-    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
-    pub open_span: Span,
-    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
-    pub close_span: Span,
-    pub is_block: bool,
+    pub info: Option<String>,
     pub value: String,
 }

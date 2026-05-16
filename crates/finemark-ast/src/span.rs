@@ -1,8 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::Element;
-
-/// 위치 정보 (바이트 오프셋)
+/// Byte offsets within the original source.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Span {
     pub start: usize,

@@ -1,4 +1,6 @@
 mod context;
-mod core;
-mod error;
+pub mod core;
+pub mod error;
 mod parser;
+
+pub use crate::core::parse_document;
