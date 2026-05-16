@@ -346,7 +346,7 @@ impl AsBStr for InputSource<'_> {
 
 impl<T> Compare<T> for InputSource<'_>
 where
-        for<'a> &'a str: Compare<T>,
+    for<'a> &'a str: Compare<T>,
 {
     fn compare(&self, other: T) -> CompareResult {
         self.logical.as_ref().compare(other)
@@ -355,7 +355,7 @@ where
 
 impl<T> FindSlice<T> for InputSource<'_>
 where
-        for<'a> &'a str: FindSlice<T>,
+    for<'a> &'a str: FindSlice<T>,
 {
     fn find_slice(&self, substr: T) -> Option<std::ops::Range<usize>> {
         self.logical.as_ref().find_slice(substr)
