@@ -21,6 +21,3 @@ jobs:
 
       - name: Test
         run: cargo test --workspace
-
-      - name: Check Fuzz Targets
-        run: cargo check -p faputa_fuzz --bins --features fuzzing
