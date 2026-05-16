@@ -30,6 +30,7 @@ pub struct ParseContext {
 }
 
 impl ParseContext {
+    // new context
     pub fn new() -> Self {
         Self {
             recursion_depth: 0,
@@ -38,5 +39,29 @@ impl ParseContext {
             max_recursion_depth: 16,
             section_counter: 1,
         }
+    }
+
+    pub fn increase_depth(&mut self) -> Result<(), FineMarkError> {
+        let new_depth = self.recursion_depth + 1;
+        if new_depth > self.max_recursion_depth {
+            return Err(FineMarkError::RecursionDepthExceeded {
+                depth: new_depth,
+                max_depth: self.max_recursion_depth,
+            })
+        }
+        self.recursion_depth = new_depth;
+        Ok(())
+    }
+
+    pub fn decrease_depth(&mut self) {
+        self.recursion_depth = self.recursion_depth.saturating_sub(1);
+    }
+
+    pub fn is_at_max_depth(&self) -> bool {
+        self.recursion_depth >= self.max_recursion_depth
+    }
+
+    pub fn current_depth(&self) -> usize {
+        self.recursion_depth
     }
 }
