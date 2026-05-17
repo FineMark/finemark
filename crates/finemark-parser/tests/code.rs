@@ -69,6 +69,18 @@ fn closing_fence_must_be_alone_on_line() {
 }
 
 #[test]
+fn closing_fence_allows_leading_spaces() {
+    let elems = parse_document("```\ncode\n   ```");
+    assert!(matches!(elems[0], Element::CodeBlock(_)));
+}
+
+#[test]
+fn closing_fence_allows_more_than_three_spaces() {
+    let elems = parse_document("```\ncode\n       ```");
+    assert!(matches!(elems[0], Element::CodeBlock(_)));
+}
+
+#[test]
 fn parses_inline_tex() {
     let elems = parse_document("before $x + y$ after");
     let Element::TeX(tex) = &elems[1] else {

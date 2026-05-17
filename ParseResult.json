@@ -1,152 +1,19 @@
 [
   {
-    "List": {
+    "CodeBlock": {
       "parameters": {
-        "unordered": {
-          "key": "unordered",
-          "value": []
-        }
-      },
-      "items": [
-        {
-          "children": [
+        "lang": {
+          "key": "lang",
+          "value": [
             {
               "Text": {
-                "value": "something"
+                "value": "rust"
               }
             }
           ]
         }
-      ]
-    }
-  },
-  {
-    "Text": {
-      "value": "single newline is a soft break"
-    }
-  },
-  {
-    "SoftBreak": {}
-  },
-  {
-    "Text": {
-      "value": "and this line stays in the same paragraph."
-    }
-  },
-  {
-    "ParagraphBreak": {}
-  },
-  {
-    "Text": {
-      "value": "blank line starts a new paragraph."
-    }
-  },
-  {
-    "ParagraphBreak": {}
-  },
-  {
-    "Text": {
-      "value": "backslash newline is a hard break"
-    }
-  },
-  {
-    "HardBreak": {}
-  },
-  {
-    "Text": {
-      "value": "so this line starts after a hard break."
-    }
-  },
-  {
-    "ParagraphBreak": {}
-  },
-  {
-    "Text": {
-      "value": "inline macro hard break happens here"
-    }
-  },
-  {
-    "HardBreak": {}
-  },
-  {
-    "SoftBreak": {}
-  },
-  {
-    "Text": {
-      "value": "and this line follows the macro break."
-    }
-  },
-  {
-    "ParagraphBreak": {}
-  },
-  {
-    "Bold": {
-      "children": [
-        {
-          "Text": {
-            "value": "bold"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "SoftBreak": {}
-  },
-  {
-    "Bold": {
-      "children": [
-        {
-          "Italic": {
-            "children": [
-              {
-                "Text": {
-                  "value": "bolditalic"
-                }
-              }
-            ]
-          }
-        }
-      ]
-    }
-  },
-  {
-    "SoftBreak": {}
-  },
-  {
-    "Italic": {
-      "children": [
-        {
-          "Text": {
-            "value": "italic"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "SoftBreak": {}
-  },
-  {
-    "Strikethrough": {
-      "children": [
-        {
-          "Text": {
-            "value": "aweofjew"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "Subscript": {
-      "children": [
-        {
-          "Text": {
-            "value": "awefawef"
-          }
-        }
-      ]
+      },
+      "value": "```\ncode\n"
     }
   }
 ]
