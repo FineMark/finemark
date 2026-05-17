@@ -57,3 +57,45 @@ fn fenced_code_must_start_at_line_start() {
             .all(|elem| !matches!(elem, Element::CodeBlock(_)))
     );
 }
+
+#[test]
+fn closing_fence_must_be_alone_on_line() {
+    let elems = parse_document("```\nnot closed\n``` trailing\n");
+    assert!(
+        elems
+            .iter()
+            .all(|elem| !matches!(elem, Element::CodeBlock(_)))
+    );
+}
+
+#[test]
+fn parses_inline_tex() {
+    let elems = parse_document("before $x + y$ after");
+    let Element::TeX(tex) = &elems[1] else {
+        panic!("expected TeX")
+    };
+
+    assert!(!tex.is_block);
+    assert_eq!(tex.value, "x + y");
+}
+
+#[test]
+fn inline_tex_does_not_cross_newline() {
+    let elems = parse_document("before $x\ny$ after");
+    assert!(
+        elems
+            .iter()
+            .all(|elem| !matches!(elem, Element::TeX(tex) if !tex.is_block))
+    );
+}
+
+#[test]
+fn parses_block_tex() {
+    let elems = parse_document("before $$\nx + y\n$$ after");
+    let Element::TeX(tex) = &elems[1] else {
+        panic!("expected TeX")
+    };
+
+    assert!(tex.is_block);
+    assert_eq!(tex.value, "\nx + y\n");
+}

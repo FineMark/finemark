@@ -10,13 +10,13 @@ use crate::parser::r#macro::macro_br_parser;
 use crate::parser::markdown::{
     markdown_bold_parser, markdown_inline_code_parser, markdown_italic_parser,
     markdown_strikethrough_parser, markdown_subscript_parser, markdown_superscript_parser,
-    markdown_underline_parser,
+    markdown_tex_parser, markdown_underline_parser,
 };
 use crate::parser::text::text_parser;
 use crate::parser::token::{
     token_asterisk_parser, token_at_parser, token_backslash_parser, token_caret_parser,
-    token_comma_parser, token_newline_parser, token_paragraph_break_parser, token_tilde_parser,
-    token_underscore_parser,
+    token_comma_parser, token_dollar_parser, token_newline_parser, token_paragraph_break_parser,
+    token_tilde_parser, token_underscore_parser,
 };
 use finemark_ast::Element;
 use winnow::combinator::{alt, peek, repeat};
@@ -39,6 +39,7 @@ pub(crate) fn element_parser<'i>(parser_input: &mut ParserInput<'i>) -> Result<E
         ',' => alt((markdown_subscript_parser, token_comma_parser)),
         '\\' => alt((escape_parser, token_backslash_parser)),
         '`' => alt((code_block_parser, markdown_inline_code_parser)),
+        '$' => alt((markdown_tex_parser, token_dollar_parser)),
         '\n' => alt((token_paragraph_break_parser, token_newline_parser)),
          _ => text_parser,
     }

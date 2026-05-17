@@ -1,13 +1,12 @@
 use crate::parser::ParserInput;
 use crate::parser::parameter::parameter_core_parser;
 use finemark_ast::{CodeBlockElement, Element, Span};
-use memchr::memchr;
 use winnow::Result;
 use winnow::ascii::space0;
 use winnow::combinator::opt;
 use winnow::prelude::*;
 use winnow::stream::{Location as StreamLocation, Stream};
-use winnow::token::{literal, take_while};
+use winnow::token::{any, literal, take_while};
 
 pub(crate) fn code_block_parser<'i>(parser_input: &mut ParserInput<'i>) -> Result<Element<'i>> {
     let start = parser_input.current_token_start();
@@ -24,20 +23,14 @@ pub(crate) fn code_block_parser<'i>(parser_input: &mut ParserInput<'i>) -> Resul
     literal("\n").parse_next(parser_input)?;
     let content_start = parser_input.current_token_start();
 
-    let remaining = parser_input
-        .input
-        .peek_slice(parser_input.input.eof_offset());
-    let Some((content_len, close_len)) = find_closing_fence(remaining, fence_len) else {
-        return Err(winnow::error::ContextError::new());
-    };
+    let content_checkpoint = parser_input.checkpoint();
+    consume_until_closing_fence(parser_input, fence_len)?;
+    let content_len = parser_input.current_token_start() - content_start;
+    parser_input.reset(&content_checkpoint);
 
     let value = parser_input.input.next_slice(content_len);
     let close_start = parser_input.current_token_start();
-    space0.parse_next(parser_input)?;
-    let close = take_while(fence_len.., '`').parse_next(parser_input)?;
-    debug_assert!(close.len() >= close_len);
-    space0.parse_next(parser_input)?;
-    opt(literal("\n")).parse_next(parser_input)?;
+    parse_closing_fence(parser_input, fence_len)?;
     let end = parser_input.previous_token_end();
 
     Ok(Element::CodeBlock(CodeBlockElement {
@@ -55,41 +48,40 @@ pub(crate) fn code_block_parser<'i>(parser_input: &mut ParserInput<'i>) -> Resul
     }))
 }
 
-fn find_closing_fence(input: &str, fence_len: usize) -> Option<(usize, usize)> {
-    let bytes = input.as_bytes();
-    let mut line_start = 0usize;
-
-    while line_start <= bytes.len() {
-        let line_end = memchr(b'\n', &bytes[line_start..])
-            .map(|idx| line_start + idx)
-            .unwrap_or(bytes.len());
-        let line = &bytes[line_start..line_end];
-        let leading_ws = count_fence_space_prefix(line);
-        let trimmed_start = &line[leading_ws..];
-        let backticks = count_backticks(trimmed_start);
-        if backticks >= fence_len {
-            let rest = &trimmed_start[backticks..];
-            if rest.iter().all(|&b| is_fence_space(b)) {
-                return Some((line_start + leading_ws, backticks));
-            }
+fn consume_until_closing_fence(parser_input: &mut ParserInput<'_>, fence_len: usize) -> Result<()> {
+    loop {
+        let checkpoint = parser_input.checkpoint();
+        if parse_closing_fence(parser_input, fence_len).is_ok() {
+            parser_input.reset(&checkpoint);
+            return Ok(());
         }
-        if line_end == bytes.len() {
+        parser_input.reset(&checkpoint);
+
+        if parser_input.input.is_empty() {
+            return Err(winnow::error::ContextError::new());
+        }
+
+        consume_line(parser_input)?;
+    }
+}
+
+fn consume_line(parser_input: &mut ParserInput<'_>) -> Result<()> {
+    while !parser_input.input.is_empty() {
+        let token = any.parse_next(parser_input)?;
+        if token == '\n' {
             break;
         }
-        line_start = line_end + 1;
     }
-
-    None
+    Ok(())
 }
 
-fn count_fence_space_prefix(bytes: &[u8]) -> usize {
-    bytes.iter().take_while(|&&b| is_fence_space(b)).count()
-}
-
-fn count_backticks(bytes: &[u8]) -> usize {
-    bytes.iter().take_while(|&&b| b == b'`').count()
-}
-
-fn is_fence_space(byte: u8) -> bool {
-    matches!(byte, b' ' | b'\t')
+fn parse_closing_fence(parser_input: &mut ParserInput<'_>, fence_len: usize) -> Result<()> {
+    space0.parse_next(parser_input)?;
+    take_while(fence_len.., '`').parse_next(parser_input)?;
+    space0.parse_next(parser_input)?;
+    let has_newline = opt(literal("\n")).parse_next(parser_input)?.is_some();
+    if !has_newline && !parser_input.input.is_empty() {
+        return Err(winnow::error::ContextError::new());
+    }
+    Ok(())
 }
