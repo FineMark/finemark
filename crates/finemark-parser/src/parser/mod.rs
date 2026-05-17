@@ -6,6 +6,7 @@ pub(crate) mod document;
 pub(crate) mod element;
 mod escape;
 mod input_source;
+mod r#macro;
 mod markdown;
 mod parameter;
 mod text;

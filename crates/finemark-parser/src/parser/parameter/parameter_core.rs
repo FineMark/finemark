@@ -53,15 +53,15 @@ fn parameter_list_parser(parser_input: &mut ParserInput) -> Result<Parameters> {
 }
 
 pub(crate) fn parameter_core_parser(parser_input: &mut ParserInput) -> Result<Parameters> {
-    // Parameter lists are not balanced raw bodies. `]` only closes the list after
-    // parameter entries have been parsed, and quoted values consume any `]` they
-    // contain as value text (for example: `[label="a ] b"]`). Nested parameter
-    // brackets are not part of the grammar, so a raw balanced scanner would accept
+    // Parameter lists are not balanced raw bodies. `)` only closes the list after
+    // parameter entries have been parsed, and quoted values consume any `)` they
+    // contain as value text (for example: `(label="a ) b")`). Nested parameter
+    // parentheses are not part of the grammar, so a raw balanced scanner would accept
     // invalid structure instead of enforcing the parameter-list grammar.
     delimited(
-        literal("["),
+        literal("("),
         delimited(multispace0, parameter_list_parser, multispace0),
-        literal("]"),
+        literal(")"),
     )
     .parse_next(parser_input)
 }

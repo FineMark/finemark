@@ -45,6 +45,7 @@ pub enum Element {
     // Line elements
     SoftBreak(SoftBreakElement),
     HardBreak(HardBreakElement),
+    ParagraphBreak(ParagraphBreakElement),
 }
 
 impl Element {
@@ -73,6 +74,7 @@ impl Element {
             Element::Subscript(element) => &element.span,
             Element::SoftBreak(e) => &e.span,
             Element::HardBreak(e) => &e.span,
+            Element::ParagraphBreak(e) => &e.span,
         }
     }
 }

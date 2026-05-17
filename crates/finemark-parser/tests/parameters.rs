@@ -5,7 +5,7 @@ use finemark_parser::parse_document;
 
 #[test]
 fn empty_parameter_list() {
-    let elems = parse_document("@hline[]");
+    let elems = parse_document("@hline()");
     let Element::HLine(h) = &elems[0] else {
         panic!("expected HLine")
     };
@@ -14,7 +14,7 @@ fn empty_parameter_list() {
 
 #[test]
 fn flag_parameter_no_value() {
-    let elems = parse_document("@hline[thick]");
+    let elems = parse_document("@hline(thick)");
     let Element::HLine(h) = &elems[0] else {
         panic!("expected HLine")
     };
@@ -24,7 +24,7 @@ fn flag_parameter_no_value() {
 
 #[test]
 fn value_parameter() {
-    let elems = parse_document("@hline[class=\"hr\"]");
+    let elems = parse_document("@hline(class=\"hr\")");
     let Element::HLine(h) = &elems[0] else {
         panic!("expected HLine")
     };
@@ -37,7 +37,7 @@ fn value_parameter() {
 
 #[test]
 fn parameter_empty_value() {
-    let elems = parse_document("@hline[key=\"\"]");
+    let elems = parse_document("@hline(key=\"\")");
     let Element::HLine(h) = &elems[0] else {
         panic!("expected HLine")
     };
@@ -48,7 +48,7 @@ fn parameter_empty_value() {
 
 #[test]
 fn multiple_flag_params() {
-    let elems = parse_document("@hline[a, b]");
+    let elems = parse_document("@hline(a, b)");
     let Element::HLine(h) = &elems[0] else {
         panic!("expected HLine")
     };
@@ -58,7 +58,7 @@ fn multiple_flag_params() {
 
 #[test]
 fn mixed_flag_and_value_params() {
-    let elems = parse_document("@hline[a, b=\"v\"]");
+    let elems = parse_document("@hline(a, b=\"v\")");
     let Element::HLine(h) = &elems[0] else {
         panic!("expected HLine")
     };
@@ -69,7 +69,7 @@ fn mixed_flag_and_value_params() {
 #[test]
 fn parameter_order_preserved() {
     // IndexMap must maintain insertion order from source
-    let elems = parse_document("@hline[z, a, m]");
+    let elems = parse_document("@hline(z, a, m)");
     let Element::HLine(h) = &elems[0] else {
         panic!("expected HLine")
     };
@@ -81,7 +81,7 @@ fn parameter_order_preserved() {
 
 #[test]
 fn whitespace_around_equals() {
-    let elems = parse_document("@hline[class = \"val\"]");
+    let elems = parse_document("@hline(class = \"val\")");
     let Element::HLine(h) = &elems[0] else {
         panic!("expected HLine")
     };
@@ -89,8 +89,8 @@ fn whitespace_around_equals() {
 }
 
 #[test]
-fn whitespace_inside_brackets() {
-    let elems = parse_document("@hline[ key = \"val\" ]");
+fn whitespace_inside_parentheses() {
+    let elems = parse_document("@hline( key = \"val\" )");
     let Element::HLine(h) = &elems[0] else {
         panic!("expected HLine")
     };
@@ -101,7 +101,7 @@ fn whitespace_inside_brackets() {
 
 #[test]
 fn value_with_spaces() {
-    let elems = parse_document("@hline[label=\"hello world\"]");
+    let elems = parse_document("@hline(label=\"hello world\")");
     let Element::HLine(h) = &elems[0] else {
         panic!("expected HLine")
     };
@@ -113,9 +113,9 @@ fn value_with_spaces() {
 }
 
 #[test]
-fn value_containing_closing_bracket() {
-    // `]` inside quoted value must not terminate the parameter list
-    let elems = parse_document("@hline[label=\"a ] b\"]");
+fn value_containing_closing_parenthesis() {
+    // `)` inside quoted value must not terminate the parameter list
+    let elems = parse_document("@hline(label=\"a ) b\")");
     let Element::HLine(h) = &elems[0] else {
         panic!("expected HLine")
     };
@@ -123,12 +123,12 @@ fn value_containing_closing_bracket() {
     let Element::Text(t) = &val[0] else {
         panic!("expected Text")
     };
-    assert_eq!(t.value, "a ] b");
+    assert_eq!(t.value, "a ) b");
 }
 
 #[test]
 fn value_containing_comma() {
-    let elems = parse_document("@hline[label=\"a, b\"]");
+    let elems = parse_document("@hline(label=\"a, b\")");
     let Element::HLine(h) = &elems[0] else {
         panic!("expected HLine")
     };
@@ -141,7 +141,7 @@ fn value_containing_comma() {
 
 #[test]
 fn hyphenated_parameter_key() {
-    let elems = parse_document("@hline[data-id=\"1\"]");
+    let elems = parse_document("@hline(data-id=\"1\")");
     let Element::HLine(h) = &elems[0] else {
         panic!("expected HLine")
     };

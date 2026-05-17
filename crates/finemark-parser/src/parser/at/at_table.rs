@@ -30,7 +30,7 @@ pub(crate) fn at_table_parser(parser_input: &mut ParserInput) -> Result<Element>
     }))
 }
 
-fn parse_table_body<'i>(parser_input: &mut ParserInput<'i>) -> Result<ParsedAtBody> {
+fn parse_table_body(parser_input: &mut ParserInput) -> Result<ParsedAtBody> {
     parse_structural_body(parser_input, at_row_parser)
 }
 
@@ -50,7 +50,7 @@ fn at_row_parser(parser_input: &mut ParserInput) -> Result<Element> {
     }))
 }
 
-fn parse_row_body<'i>(parser_input: &mut ParserInput<'i>) -> Result<ParsedAtBody> {
+fn parse_row_body(parser_input: &mut ParserInput) -> Result<ParsedAtBody> {
     parse_structural_body(parser_input, at_column_parser)
 }
 

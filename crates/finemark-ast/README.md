@@ -15,7 +15,7 @@ The central `Element` enum covers all nodes produced by the FineMark parser:
 | AT commands | `Heading`, `BlockQuote`, `Link`, `HLine`, `Table`, `TableRow`, `TableColumn` |
 | Inline styles | `Bold`, `Italic`, `Strikethrough`, `Underline`, `Superscript`, `Subscript` |
 | Inline content | `InlineCode`, `TeX` |
-| Structure | `List`, `CodeBlock`, `SoftBreak`, `HardBreak` |
+| Structure | `List`, `CodeBlock`, `SoftBreak`, `HardBreak`, `ParagraphBreak` |
 
 Every element carries a `Span { start, end }` of byte offsets into the original source.
 

@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added `@br` as an inline hard break command.
+- Added paragraph break parsing for blank lines.
+- Added hard break parsing for backslash-newline escape sequences.
+- Added a dedicated parser macro module for inline macro commands.
+- Added structured `@list(...) { @item { ... } }` parsing.
+- Added list parameters to the AST so renderers can decide list kind, style, and numbering semantics.
+
+### Changed
+
+- Changed AT command parameters from bracket syntax to parenthesis syntax, e.g. `@link(href="..."){...}`.
+- Changed `ListElement` to preserve raw command parameters instead of parser-resolved `ListKind` values.
+
 ## [0.1.0] - 2026-05-17
 
 ### Added

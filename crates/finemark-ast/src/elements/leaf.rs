@@ -32,6 +32,12 @@ pub struct HardBreakElement {
 }
 
 #[derive(Debug, Clone, Serialize)]
+pub struct ParagraphBreakElement {
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, Serialize)]
 pub struct EscapeElement {
     #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub span: Span,

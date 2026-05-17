@@ -20,15 +20,15 @@ Unrecognised syntax falls back to `Element::Text` nodes rather than hard errors.
 ## AT command syntax
 
 ```
-@keyword [param, key="value"] { body }
+@keyword(param, key="value") { body }
 ```
 
-Whitespace between `@keyword`, `[params]`, and `{body}` is optional.
+Whitespace between `@keyword`, `(params)`, and `{body}` is optional.
 Bodies are parsed recursively, so AT commands can be nested:
 
 ```
-@quote [cite="https://example.com"] {
-  Quoted text with @link[href="https://example.com"]{a link} inside.
+@quote(cite="https://example.com") {
+  Quoted text with @link(href="https://example.com"){a link} inside.
 }
 ```
 

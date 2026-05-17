@@ -1,30 +1,82 @@
 [
   {
-    "BlockQuote": {
-      "parameters": {},
-      "children": [
+    "List": {
+      "parameters": {
+        "unordered": {
+          "key": "unordered",
+          "value": []
+        }
+      },
+      "items": [
         {
-          "BlockQuote": {
-            "parameters": {},
-            "children": [
-              {
-                "Heading": {
-                  "level": 1,
-                  "section_index": 1,
-                  "parameters": {},
-                  "children": [
-                    {
-                      "Text": {
-                        "value": "deep"
-                      }
-                    }
-                  ]
-                }
+          "children": [
+            {
+              "Text": {
+                "value": "something"
               }
-            ]
-          }
+            }
+          ]
         }
       ]
     }
+  },
+  {
+    "Text": {
+      "value": "single newline is a soft break"
+    }
+  },
+  {
+    "SoftBreak": {}
+  },
+  {
+    "Text": {
+      "value": "and this line stays in the same paragraph."
+    }
+  },
+  {
+    "ParagraphBreak": {}
+  },
+  {
+    "Text": {
+      "value": "blank line starts a new paragraph."
+    }
+  },
+  {
+    "ParagraphBreak": {}
+  },
+  {
+    "Text": {
+      "value": "backslash newline is a hard break"
+    }
+  },
+  {
+    "HardBreak": {}
+  },
+  {
+    "Text": {
+      "value": "so this line starts after a hard break."
+    }
+  },
+  {
+    "ParagraphBreak": {}
+  },
+  {
+    "Text": {
+      "value": "inline macro hard break happens here"
+    }
+  },
+  {
+    "HardBreak": {}
+  },
+  {
+    "SoftBreak": {}
+  },
+  {
+    "Text": {
+      "value": "and this line follows the macro break."
+    }
+  },
+  {
+    "SoftBreak": {}
   }
 ]

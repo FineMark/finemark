@@ -5,31 +5,31 @@ use finemark_parser::parse_document;
 
 #[test]
 fn no_whitespace() {
-    let elems = parse_document("@link[href=\"u\"]{body}");
+    let elems = parse_document("@link(href=\"u\"){body}");
     assert!(matches!(elems[0], Element::Link(_)));
 }
 
 #[test]
 fn space_before_params() {
-    let elems = parse_document("@link [href=\"u\"]{body}");
+    let elems = parse_document("@link (href=\"u\"){body}");
     assert!(matches!(elems[0], Element::Link(_)));
 }
 
 #[test]
 fn space_before_body() {
-    let elems = parse_document("@link[href=\"u\"] {body}");
+    let elems = parse_document("@link(href=\"u\") {body}");
     assert!(matches!(elems[0], Element::Link(_)));
 }
 
 #[test]
 fn spaces_everywhere() {
-    let elems = parse_document("@link [href=\"u\"] {body}");
+    let elems = parse_document("@link (href=\"u\") {body}");
     assert!(matches!(elems[0], Element::Link(_)));
 }
 
 #[test]
 fn newlines_between_parts() {
-    let elems = parse_document("@link\n[href=\"u\"]\n{body}");
+    let elems = parse_document("@link\n(href=\"u\")\n{body}");
     assert!(matches!(elems[0], Element::Link(_)));
 }
 
@@ -44,7 +44,7 @@ fn hline_no_params_no_body() {
 
 #[test]
 fn hline_with_params_no_body() {
-    let elems = parse_document("@hline[class=\"thick\"]");
+    let elems = parse_document("@hline(class=\"thick\")");
     let Element::HLine(h) = &elems[0] else {
         panic!("expected HLine")
     };
@@ -104,7 +104,7 @@ fn at_nested_inside_quote_body() {
 
 #[test]
 fn link_inside_quote_after_whitespace() {
-    let src = "@quote {\n  plain @link[href=\"u\"]{linked}\n}";
+    let src = "@quote {\n  plain @link(href=\"u\"){linked}\n}";
     let elems = parse_document(src);
     let Element::BlockQuote(q) = &elems[0] else {
         panic!("expected BlockQuote")
@@ -155,6 +155,12 @@ fn text_before_at_command_stops_correctly() {
     assert!(matches!(elems[1], Element::Heading(_)));
 }
 
+#[test]
+fn br_command_produces_hard_break() {
+    let elems = parse_document("a@brb");
+    assert!(matches!(elems[1], Element::HardBreak(_)));
+}
+
 // ── Comment - raw body preserved ─────────────────────────────────────────
 
 #[test]
@@ -197,4 +203,28 @@ fn empty_table_body() {
         panic!("expected Table")
     };
     assert!(tbl.children.is_empty());
+}
+
+// ── List structure ───────────────────────────────────────────────────────
+
+#[test]
+fn unordered_list_with_item() {
+    let elems = parse_document("@list(unordered){@item{something}}");
+    let Element::List(list) = &elems[0] else {
+        panic!("expected List")
+    };
+    assert!(list.parameters.contains_key("unordered"));
+    assert_eq!(list.items.len(), 1);
+    assert!(matches!(list.items[0].children[0], Element::Text(_)));
+}
+
+#[test]
+fn ordered_list_preserves_parameters() {
+    let elems = parse_document("@list(ordered, style=\"I\", start=\"3\"){@item{third}}");
+    let Element::List(list) = &elems[0] else {
+        panic!("expected List")
+    };
+    assert!(list.parameters.contains_key("ordered"));
+    assert!(list.parameters.contains_key("style"));
+    assert!(list.parameters.contains_key("start"));
 }

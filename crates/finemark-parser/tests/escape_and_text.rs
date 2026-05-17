@@ -108,8 +108,13 @@ fn newline_produces_soft_break() {
 #[test]
 fn multiple_consecutive_newlines_produce_multiple_soft_breaks() {
     let elems = parse_document("a\n\nb");
-    assert!(matches!(elems[1], Element::SoftBreak(_)));
-    assert!(matches!(elems[2], Element::SoftBreak(_)));
+    assert!(matches!(elems[1], Element::ParagraphBreak(_)));
+}
+
+#[test]
+fn backslash_newline_produces_hard_break() {
+    let elems = parse_document("a\\\nb");
+    assert!(matches!(elems[1], Element::HardBreak(_)));
 }
 
 #[test]

@@ -33,7 +33,7 @@ pub(crate) fn parse_at_head(
     literal(keyword).parse_next(parser_input)?;
     let open_end = parser_input.previous_token_end();
 
-    // Allow optional whitespace between the keyword and the opening `[`.
+    // Allow optional whitespace between the keyword and the opening `(`.
     multispace0.parse_next(parser_input)?;
     let parameters = opt(parameter_core_parser)
         .parse_next(parser_input)?
