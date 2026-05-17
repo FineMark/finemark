@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Restructured `finemark-ast` elements: renamed `leaf.rs` to `inline.rs`, merged `text_style.rs` into `inline.rs`, and moved `ParagraphBreakElement` to `block.rs` to better align with AST semantics.
+- Refactored `token_newline.rs` into separate `newline.rs` and `paragraph_break.rs` modules.
+- Standardized parser module exports to use `mod` + `pub use` (Facade pattern) instead of `pub mod` for improved API encapsulation.
 - Changed AT command parameters from bracket syntax to parenthesis syntax, e.g. `@link(href="..."){...}`.
 - Changed `ListElement` to preserve raw command parameters instead of parser-resolved `ListKind` values.
 

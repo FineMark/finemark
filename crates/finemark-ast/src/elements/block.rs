@@ -47,3 +47,9 @@ pub struct CodeBlockElement {
     pub info: Option<String>,
     pub value: String,
 }
+
+#[derive(Debug, Clone, Serialize)]
+pub struct ParagraphBreakElement {
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
+    pub span: Span,
+}

@@ -32,12 +32,6 @@ pub struct HardBreakElement {
 }
 
 #[derive(Debug, Clone, Serialize)]
-pub struct ParagraphBreakElement {
-    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
-    pub span: Span,
-}
-
-#[derive(Debug, Clone, Serialize)]
 pub struct EscapeElement {
     #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub span: Span,
@@ -84,4 +78,15 @@ pub struct TeXElement {
     pub close_span: Span,
     pub is_block: bool,
     pub value: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct TextStyleElement {
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
+    pub span: Span,
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
+    pub open_span: Span,
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
+    pub close_span: Span,
+    pub children: Vec<Element>,
 }
