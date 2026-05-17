@@ -43,6 +43,15 @@ fn hline_no_params_no_body() {
 }
 
 #[test]
+fn hline_with_text_backtrack() {
+    let elems = parse_document("@hline\n\nHello");
+    assert!(matches!(elems[0], Element::HLine(_)));
+    assert!(matches!(elems[1], Element::ParagraphBreak(_)));
+    assert!(matches!(elems[2], Element::Text(_)));
+    assert_eq!(elems.len(), 3);
+}
+
+#[test]
 fn hline_with_params_no_body() {
     let elems = parse_document("@hline(class=\"thick\")");
     let Element::HLine(h) = &elems[0] else {

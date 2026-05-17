@@ -9,7 +9,6 @@ use finemark_ast::{
     Element, ErrorElement, Span, TableColumnElement, TableElement, TableRowElement,
 };
 use winnow::Result;
-use winnow::ascii::multispace0;
 use winnow::combinator::repeat;
 use winnow::prelude::*;
 use winnow::stream::{Location as StreamLocation, Stream};
@@ -61,8 +60,6 @@ fn parse_structural_body<'i, F>(
 where
     F: FnMut(&mut ParserInput<'i>) -> Result<Element>,
 {
-    // Allow optional whitespace between the parameter list (or keyword) and `{`.
-    multispace0.parse_next(parser_input)?;
     let body = parse_optional_brace_body(
         parser_input,
         BodyWhitespacePolicy::TrimAsciiWhitespace,

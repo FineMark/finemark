@@ -4,7 +4,7 @@ use crate::parser::utils::{parse_nested_document_at, parse_optional_brace_body};
 use finemark_ast::{Element, Parameters, Span};
 use winnow::Result;
 use winnow::ascii::multispace0;
-use winnow::combinator::opt;
+use winnow::combinator::{opt, preceded};
 use winnow::prelude::*;
 use winnow::stream::Location as StreamLocation;
 use winnow::token::literal;
@@ -34,8 +34,7 @@ pub(crate) fn parse_at_head(
     let open_end = parser_input.previous_token_end();
 
     // Allow optional whitespace between the keyword and the opening `(`.
-    multispace0.parse_next(parser_input)?;
-    let parameters = opt(parameter_core_parser)
+    let parameters = opt(preceded(multispace0, parameter_core_parser))
         .parse_next(parser_input)?
         .unwrap_or_default();
 

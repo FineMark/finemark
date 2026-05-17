@@ -3,6 +3,7 @@ use crate::parser::utils::parse_raw_until_balanced_single_brace;
 use finemark_ast::Span;
 use winnow::Result;
 use winnow::ascii::multispace0;
+use winnow::combinator::{opt, preceded};
 use winnow::prelude::*;
 use winnow::stream::Location as StreamLocation;
 use winnow::token::literal;
@@ -66,11 +67,10 @@ pub(crate) fn parse_optional_brace_body<'i>(
     body_policy: BodyWhitespacePolicy,
     after_close_policy: AfterClosePolicy,
 ) -> Result<Option<ParsedDelimitedBody<'i>>> {
-    if parser_input.input.peek_token() != Some('{') {
-        return Ok(None);
-    }
-
-    parse_brace_body(parser_input, body_policy, after_close_policy).map(Some)
+    opt(preceded(multispace0, |i: &mut ParserInput<'i>| {
+        parse_brace_body(i, body_policy, after_close_policy)
+    }))
+    .parse_next(parser_input)
 }
 
 fn apply_body_policy(content: &str, policy: BodyWhitespacePolicy) -> (&str, usize) {

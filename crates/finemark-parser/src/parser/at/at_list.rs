@@ -5,7 +5,6 @@ use crate::parser::utils::parse_optional_brace_body;
 use crate::parser::{InputSource, ParserInput, SourceSegment};
 use finemark_ast::{Element, ErrorElement, ListElement, ListItem, Span};
 use winnow::Result;
-use winnow::ascii::multispace0;
 use winnow::combinator::repeat;
 use winnow::prelude::*;
 use winnow::stream::{Location as StreamLocation, Stream};
@@ -30,7 +29,6 @@ pub(crate) fn at_list_parser(parser_input: &mut ParserInput) -> Result<Element> 
 }
 
 fn parse_list_body(parser_input: &mut ParserInput) -> Result<ParsedListBody> {
-    multispace0.parse_next(parser_input)?;
     let body = parse_optional_brace_body(
         parser_input,
         BodyWhitespacePolicy::TrimAsciiWhitespace,
