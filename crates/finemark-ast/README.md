@@ -21,9 +21,9 @@ Every element carries a `Span { start, end }` of byte offsets into the original 
 
 ## Features
 
-| Feature | Description |
-|---|---|
-| *(default)* | All element types; spans are included in the struct fields |
+| Feature             | Description                                                       |
+|---------------------|-------------------------------------------------------------------|
+| *(default)*         | All element types; spans are included in the struct fields        |
 | `include-locations` | Enables `Serialize` impls that include span fields in JSON output |
 
 ## License

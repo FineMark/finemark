@@ -34,9 +34,9 @@ Bodies are parsed recursively, so AT commands can be nested:
 
 ## Features
 
-| Feature | Description |
-|---|---|
-| *(default)* | Full parser with all element types |
+| Feature             | Description                                                                  |
+|---------------------|------------------------------------------------------------------------------|
+| *(default)*         | Full parser with all element types                                           |
 | `include-locations` | Emits byte-offset spans in serialized AST output; required for fixture tests |
 
 ## Testing
