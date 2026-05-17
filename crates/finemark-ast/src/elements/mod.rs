@@ -3,6 +3,7 @@ mod leaf;
 mod list;
 mod parameter;
 mod table;
+mod text_style;
 
 pub use block::*;
 pub use leaf::*;
@@ -10,6 +11,7 @@ pub use list::*;
 pub use parameter::*;
 use serde::Serialize;
 pub use table::*;
+pub use text_style::*;
 
 #[derive(Debug, Clone, Serialize)]
 pub enum Element {
@@ -31,6 +33,14 @@ pub enum Element {
     Table(TableElement),
     TableRow(TableRowElement),
     TableColumn(TableColumnElement),
+
+    // Text styles
+    Bold(TextStyleElement),
+    Italic(TextStyleElement),
+    Strikethrough(TextStyleElement),
+    Underline(TextStyleElement),
+    Superscript(TextStyleElement),
+    Subscript(TextStyleElement),
 
     // Line elements
     SoftBreak(SoftBreakElement),
@@ -55,6 +65,12 @@ impl Element {
             Element::Table(element) => &element.span,
             Element::TableRow(element) => &element.span,
             Element::TableColumn(element) => &element.span,
+            Element::Bold(element) => &element.span,
+            Element::Italic(element) => &element.span,
+            Element::Strikethrough(element) => &element.span,
+            Element::Underline(element) => &element.span,
+            Element::Superscript(element) => &element.span,
+            Element::Subscript(element) => &element.span,
             Element::SoftBreak(e) => &e.span,
             Element::HardBreak(e) => &e.span,
         }

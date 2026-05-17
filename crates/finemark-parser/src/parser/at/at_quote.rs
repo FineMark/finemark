@@ -18,7 +18,8 @@ pub(crate) fn at_quote_parser(parser_input: &mut ParserInput) -> Result<Element>
             start: head.start,
             end: body.end,
         },
-        marker_spans: vec![head.open_span],
+        body_open_span: body.open_span,
+        body_close_span: body.close_span,
         parameters: head.parameters,
         children: body.children,
     }))

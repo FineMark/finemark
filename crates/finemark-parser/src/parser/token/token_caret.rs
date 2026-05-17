@@ -7,6 +7,7 @@ use winnow::stream::Location as StreamLocation;
 use winnow::token::literal;
 
 pub fn token_caret_parser(parser_input: &mut ParserInput) -> Result<Element> {
+    // Closing delimiters must be left for their owning style parser.
     if parser_input.state.is_guard_active(ParseGuard::Superscript)
         && parser_input.input.starts_with("^^")
     {

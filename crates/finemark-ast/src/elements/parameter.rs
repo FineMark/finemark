@@ -1,4 +1,5 @@
 use crate::{Element, Span};
+use indexmap::IndexMap;
 use serde::Serialize;
 
 #[derive(Debug, Clone, Serialize)]
@@ -9,6 +10,5 @@ pub struct Parameter {
     pub value: Vec<Element>,
 }
 
-/// FineMark keeps parameter order and duplicates intact at parse time.
-/// Semantic layers can normalize this into maps for specific elements.
-pub type Parameters = Vec<Parameter>;
+/// Parameter map that keeps source order while supporting direct key lookup.
+pub type Parameters = IndexMap<String, Parameter>;

@@ -16,6 +16,15 @@ pub(crate) fn at_comment_parser(parser_input: &mut ParserInput) -> Result<Elemen
         .as_ref()
         .map(|body| body.end)
         .unwrap_or_else(|| parser_input.previous_token_end());
+    let (body_open_span, body_close_span, value) = body
+        .map(|body| {
+            (
+                Some(body.open_span),
+                Some(body.close_span),
+                body.content.to_string(),
+            )
+        })
+        .unwrap_or_default();
 
     // Comments keep raw brace content because renderers usually discard them
     // instead of rendering child elements.
@@ -24,8 +33,8 @@ pub(crate) fn at_comment_parser(parser_input: &mut ParserInput) -> Result<Elemen
             start: head.start,
             end,
         },
-        value: body
-            .map(|body| body.content.to_string())
-            .unwrap_or_default(),
+        body_open_span,
+        body_close_span,
+        value,
     }))
 }

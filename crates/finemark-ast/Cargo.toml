@@ -12,6 +12,7 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
+indexmap.workspace = true
 serde.workspace = true
 
 [features]

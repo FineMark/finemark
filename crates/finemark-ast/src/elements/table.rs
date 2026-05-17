@@ -5,6 +5,10 @@ use serde::Serialize;
 pub struct TableElement {
     #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub span: Span,
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
+    pub body_open_span: Option<Span>,
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
+    pub body_close_span: Option<Span>,
     pub parameters: Parameters,
     pub children: Vec<Element>,
 }
@@ -13,6 +17,10 @@ pub struct TableElement {
 pub struct TableRowElement {
     #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub span: Span,
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
+    pub body_open_span: Option<Span>,
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
+    pub body_close_span: Option<Span>,
     pub parameters: Parameters,
     pub children: Vec<Element>,
 }
@@ -21,6 +29,10 @@ pub struct TableRowElement {
 pub struct TableColumnElement {
     #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub span: Span,
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
+    pub body_open_span: Option<Span>,
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
+    pub body_close_span: Option<Span>,
     pub parameters: Parameters,
     pub children: Vec<Element>,
 }

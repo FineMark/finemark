@@ -12,18 +12,22 @@ pub struct TextElement {
 pub struct CommentElement {
     #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub span: Span,
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
+    pub body_open_span: Option<Span>,
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
+    pub body_close_span: Option<Span>,
     pub value: String,
 }
 
 #[derive(Debug, Clone, Serialize)]
 pub struct SoftBreakElement {
-    #[cfg_attr(not(feature = "include_locations"), serde(skip_serializing))]
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub span: Span,
 }
 
 #[derive(Debug, Clone, Serialize)]
 pub struct HardBreakElement {
-    #[cfg_attr(not(feature = "include_locations"), serde(skip_serializing))]
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub span: Span,
 }
 
@@ -45,6 +49,10 @@ pub struct ErrorElement {
 pub struct LinkElement {
     #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub span: Span,
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
+    pub body_open_span: Option<Span>,
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
+    pub body_close_span: Option<Span>,
     pub parameters: Parameters,
     pub children: Vec<Element>,
 }

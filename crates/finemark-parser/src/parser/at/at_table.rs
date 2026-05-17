@@ -22,6 +22,8 @@ pub(crate) fn at_table_parser(parser_input: &mut ParserInput) -> Result<Element>
             start: head.start,
             end: body.end,
         },
+        body_open_span: body.open_span,
+        body_close_span: body.close_span,
         parameters: head.parameters,
         children: body.children,
     }))
@@ -40,6 +42,8 @@ fn at_row_parser(parser_input: &mut ParserInput) -> Result<Element> {
             start: head.start,
             end: body.end,
         },
+        body_open_span: body.open_span,
+        body_close_span: body.close_span,
         parameters: head.parameters,
         children: body.children,
     }))
@@ -65,6 +69,8 @@ where
         let end = parser_input.previous_token_end();
         return Ok(ParsedAtBody {
             children: Vec::new(),
+            open_span: None,
+            close_span: None,
             end,
         });
     };
@@ -109,6 +115,8 @@ where
 
     Ok(ParsedAtBody {
         children,
+        open_span: Some(body.open_span),
+        close_span: Some(body.close_span),
         end: body.end,
     })
 }
@@ -126,6 +134,8 @@ fn at_column_parser(parser_input: &mut ParserInput) -> Result<Element> {
             start: head.start,
             end: body.end,
         },
+        body_open_span: body.open_span,
+        body_close_span: body.close_span,
         parameters: head.parameters,
         children: body.children,
     }))

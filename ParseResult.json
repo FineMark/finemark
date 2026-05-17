@@ -3,12 +3,12 @@
     "Heading": {
       "level": 1,
       "section_index": 1,
-      "parameters": [
-        {
+      "parameters": {
+        "fold": {
           "key": "fold",
           "value": []
         }
-      ],
+      },
       "children": [
         {
           "Text": {
@@ -22,7 +22,7 @@
     "Heading": {
       "level": 2,
       "section_index": 2,
-      "parameters": [],
+      "parameters": {},
       "children": [
         {
           "Text": {
@@ -42,8 +42,8 @@
   },
   {
     "Link": {
-      "parameters": [
-        {
+      "parameters": {
+        "href": {
           "key": "href",
           "value": [
             {
@@ -53,7 +53,7 @@
             }
           ]
         },
-        {
+        "label": {
           "key": "label",
           "value": [
             {
@@ -63,7 +63,7 @@
             }
           ]
         }
-      ],
+      },
       "children": [
         {
           "Text": {
@@ -83,7 +83,7 @@
     "Heading": {
       "level": 2,
       "section_index": 3,
-      "parameters": [],
+      "parameters": {},
       "children": [
         {
           "Text": {
@@ -95,8 +95,8 @@
   },
   {
     "BlockQuote": {
-      "parameters": [
-        {
+      "parameters": {
+        "cite": {
           "key": "cite",
           "value": [
             {
@@ -106,7 +106,7 @@
             }
           ]
         }
-      ],
+      },
       "children": [
         {
           "Text": {
@@ -128,7 +128,7 @@
     "Heading": {
       "level": 2,
       "section_index": 4,
-      "parameters": [],
+      "parameters": {},
       "children": [
         {
           "Text": {
@@ -140,8 +140,8 @@
   },
   {
     "Table": {
-      "parameters": [
-        {
+      "parameters": {
+        "class": {
           "key": "class",
           "value": [
             {
@@ -151,20 +151,20 @@
             }
           ]
         }
-      ],
+      },
       "children": [
         {
           "TableRow": {
-            "parameters": [
-              {
+            "parameters": {
+              "head": {
                 "key": "head",
                 "value": []
               }
-            ],
+            },
             "children": [
               {
                 "TableColumn": {
-                  "parameters": [],
+                  "parameters": {},
                   "children": [
                     {
                       "Text": {
@@ -176,7 +176,7 @@
               },
               {
                 "TableColumn": {
-                  "parameters": [],
+                  "parameters": {},
                   "children": [
                     {
                       "Text": {
@@ -191,12 +191,12 @@
         },
         {
           "TableRow": {
-            "parameters": [],
+            "parameters": {},
             "children": [
               {
                 "TableColumn": {
-                  "parameters": [
-                    {
+                  "parameters": {
+                    "span": {
                       "key": "span",
                       "value": [
                         {
@@ -206,7 +206,7 @@
                         }
                       ]
                     }
-                  ],
+                  },
                   "children": [
                     {
                       "Text": {
@@ -224,7 +224,7 @@
   },
   {
     "HLine": {
-      "parameters": []
+      "parameters": {}
     }
   },
   {
@@ -237,7 +237,7 @@
     "Heading": {
       "level": 3,
       "section_index": 5,
-      "parameters": [],
+      "parameters": {},
       "children": [
         {
           "Text": {

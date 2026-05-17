@@ -12,7 +12,7 @@ fn identifier<'i>(parser_input: &mut ParserInput<'i>) -> Result<&'i str> {
     take_while(1.., |c: char| c.is_alphanumeric() || c == '_' || c == '-').parse_next(parser_input)
 }
 
-fn parameter_parser(parser_input: &mut ParserInput) -> Result<Parameter> {
+fn parameter_parser(parser_input: &mut ParserInput) -> Result<(String, Parameter)> {
     // Keep spans tight around the actual parameter, excluding separator whitespace.
     multispace0.parse_next(parser_input)?;
     let start = parser_input.current_token_start();
@@ -30,11 +30,14 @@ fn parameter_parser(parser_input: &mut ParserInput) -> Result<Parameter> {
     let end = parser_input.previous_token_end();
     multispace0.parse_next(parser_input)?;
 
-    Ok(Parameter {
+    let key = key.to_string();
+    let parameter = Parameter {
         span: Span { start, end },
-        key: key.to_string(),
+        key: key.clone(),
         value,
-    })
+    };
+
+    Ok((key, parameter))
 }
 
 fn comma_separator<'i>(parser_input: &mut ParserInput<'i>) -> Result<&'i str> {
@@ -43,8 +46,10 @@ fn comma_separator<'i>(parser_input: &mut ParserInput<'i>) -> Result<&'i str> {
 
 fn parameter_list_parser(parser_input: &mut ParserInput) -> Result<Parameters> {
     // Parse only entries and separators. Delimiters belong to the caller.
-    // Duplicate-key policy is intentionally left to validators/renderers.
-    separated(0.., parameter_parser, comma_separator).parse_next(parser_input)
+    // IndexMap preserves source order for rendering/LSP while supporting lookup.
+    separated(0.., parameter_parser, comma_separator)
+        .map(|pairs: Vec<_>| pairs.into_iter().collect::<Parameters>())
+        .parse_next(parser_input)
 }
 
 pub(crate) fn parameter_core_parser(parser_input: &mut ParserInput) -> Result<Parameters> {

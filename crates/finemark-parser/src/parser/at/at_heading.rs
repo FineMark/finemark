@@ -47,6 +47,8 @@ fn at_heading_parser(
             end: body.end,
         },
         marker_span: head.open_span,
+        body_open_span: body.open_span,
+        body_close_span: body.close_span,
         level,
         section_index: parser_input.state.next_section_index(),
         parameters: head.parameters,

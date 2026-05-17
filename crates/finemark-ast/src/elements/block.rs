@@ -7,6 +7,10 @@ pub struct HeadingElement {
     pub span: Span,
     #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub marker_span: Span,
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
+    pub body_open_span: Option<Span>,
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
+    pub body_close_span: Option<Span>,
     pub level: u8,
     pub section_index: usize,
     pub parameters: Parameters,
@@ -18,7 +22,9 @@ pub struct BlockQuoteElement {
     #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub span: Span,
     #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
-    pub marker_spans: Vec<Span>,
+    pub body_open_span: Option<Span>,
+    #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
+    pub body_close_span: Option<Span>,
     pub parameters: Parameters,
     pub children: Vec<Element>,
 }

@@ -7,12 +7,12 @@ use winnow::stream::Location as StreamLocation;
 use winnow::token::literal;
 
 pub fn token_asterisk_parser(parser_input: &mut ParserInput) -> Result<Element> {
-    // Bold context에서 **을 만나면 실패 (delimiter로 사용되어야 함)
+    // Closing delimiters must be left for their owning style parser.
     if parser_input.state.is_guard_active(ParseGuard::Bold) && parser_input.input.starts_with("**")
     {
         return Err(winnow::error::ContextError::new());
     }
-    // Italic context에서 *을 만나면 실패 (delimiter로 사용되어야 함)
+
     if parser_input.state.is_guard_active(ParseGuard::Italic) && parser_input.input.starts_with("*")
     {
         return Err(winnow::error::ContextError::new());
