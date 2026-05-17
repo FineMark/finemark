@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added AST modules split by role: block elements, leaf elements, and list elements.
 - Added heading metadata for folded headings and section indexes.
 - Added list kind modeling with unordered lists and ordered list styles.
+- Added structured `@` command parsing for headings, quotes, horizontal lines, links, tables, table rows, table columns, and raw comments.
+- Added bracketed command parameters with ordered `IndexMap` storage and span-preserving parameter values.
+- Added balanced single-brace body parsing with preserved body delimiter spans for LSP and diagnostics.
+- Added inline markdown text styles for bold, italic, strikethrough, underline, superscript, and subscript.
+- Added text-style AST nodes with open and close delimiter spans.
+- Added parser tests for inline markdown text styles and nested `***...***` bold/italic parsing.
 
 ### Changed
 
@@ -24,7 +30,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed inline code AST support to `InlineCodeElement` / `Element::InlineCode`.
 - Renamed thematic break terminology to `HLine`.
 - Limited unordered markdown list markers to `- `.
+- Replaced markdown block parsing dispatch with direct element parsing for the structured `@` grammar.
+- Changed heading fold state from a dedicated AST field to command parameters.
+- Changed command parameters from `Vec<Parameter>` to `IndexMap<String, Parameter>` for ordered key lookup.
+- Changed unknown `@name[...]` forms to fall back to plain text instead of parser errors.
+- Changed `@table` and `@row` parsing so each structural command owns its valid child grammar.
+- Changed `@quote` AST to remove obsolete markdown blockquote marker spans.
+
+### Removed
+
+- Removed markdown block parser modules for headings, blockquotes, horizontal lines, and lists.
+- Removed slash-based comment dispatch in favor of `@comment{...}`.
+- Removed the `BoldItalic` parser/guard/AST path; `***...***` now parses as nested bold and italic, matching SevenMark behavior.
 
 ### Notes
 
-- `element_parser` is intentionally still a TODO single-element dispatcher; inline parser implementation is planned separately.
+- Token parsers for future inline constructs remain in place even when not yet wired into the active grammar.
