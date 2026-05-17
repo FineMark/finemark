@@ -13,7 +13,10 @@ fn main() {
         .collect();
 
     if categories.is_empty() {
-        eprintln!("No fixture categories found under {}", fixture_root.display());
+        eprintln!(
+            "No fixture categories found under {}",
+            fixture_root.display()
+        );
         return;
     }
 
