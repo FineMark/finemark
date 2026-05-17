@@ -25,9 +25,9 @@ memchr.workspace = true
 default = []
 include-locations = ["finemark-ast/include-locations"]
 
-# [[example]]
-# name = "gen_expected"
-# required-features = ["include-locations"]
+[[example]]
+name = "gen_expected"
+required-features = ["include-locations"]
 
 [[test]]
 name = "parser_fixtures"
