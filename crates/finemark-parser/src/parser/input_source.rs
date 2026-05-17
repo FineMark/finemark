@@ -490,7 +490,7 @@ mod tests {
         // Segments:
         //   {logical_start:0, original_start:2, len:9}   — "가나다"
         //   {logical_start:9, original_start:11, len:1}  — "\n"
-        //   {logical_start:10, original_start:14, len:9} — "라마바"
+        //   {logical_start:10, original_start:14, len:9} - "라마바"
         //   {logical_start:19, original_start:23, len:1} — "\n"
         let logical = "가나다\n라마바\n";
         let segments = vec![
@@ -568,3 +568,4 @@ mod tests {
         );
     }
 }
+
