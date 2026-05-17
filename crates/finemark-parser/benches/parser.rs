@@ -9,7 +9,7 @@ use std::time::Duration;
 
 fn load_input() -> String {
     let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    let path = manifest_dir.join("target.fm");
+    let path = manifest_dir.join("../../target.fm");
 
     fs::read_to_string(&path)
         .unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()))
