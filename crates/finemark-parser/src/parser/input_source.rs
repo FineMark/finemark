@@ -6,114 +6,14 @@ use winnow::stream::{
     SliceLen, Stream, StreamIsPartial, UpdateSlice,
 };
 
-#[derive(Debug, Clone)]
-pub struct SourceSegment {
-    pub logical_start: usize,
-    pub original_start: usize,
-    pub len: usize,
-}
-
-impl SourceSegment {
-    fn logical_end(&self) -> usize {
-        self.logical_start + self.len
-    }
-
-    fn original_end(&self) -> usize {
-        self.original_start + self.len
-    }
-}
-
-#[derive(Debug, Clone)]
-enum SourceMap {
-    Identity {
-        base: usize,
-    },
-    Segmented {
-        segments: Vec<SourceSegment>,
-        empty_original_offset: usize,
-    },
-}
-
-impl SourceMap {
-    fn segment_for_start(segments: &[SourceSegment], offset: usize) -> Option<&SourceSegment> {
-        let index = segments.partition_point(|segment| segment.logical_start <= offset);
-        if index == 0 {
-            return None;
-        }
-
-        let segment = &segments[index - 1];
-        (offset < segment.logical_end()).then_some(segment)
-    }
-
-    fn segment_for_end(segments: &[SourceSegment], offset: usize) -> Option<&SourceSegment> {
-        let index = segments.partition_point(|segment| segment.logical_start < offset);
-        if index == 0 {
-            return None;
-        }
-
-        let segment = &segments[index - 1];
-        (offset <= segment.logical_end()).then_some(segment)
-    }
-
-    fn map_start(&self, offset: usize) -> usize {
-        match self {
-            SourceMap::Identity { base } => base + offset,
-            SourceMap::Segmented {
-                segments,
-                empty_original_offset,
-            } => {
-                if segments.is_empty() {
-                    return *empty_original_offset;
-                }
-
-                if let Some(segment) = Self::segment_for_start(segments, offset) {
-                    return segment.original_start + (offset - segment.logical_start);
-                }
-
-                segments
-                    .last()
-                    .map(SourceSegment::original_end)
-                    .unwrap_or(*empty_original_offset)
-            }
-        }
-    }
-
-    fn map_end(&self, offset: usize) -> usize {
-        match self {
-            SourceMap::Identity { base } => base + offset,
-            SourceMap::Segmented {
-                segments,
-                empty_original_offset,
-            } => {
-                if segments.is_empty() {
-                    return *empty_original_offset;
-                }
-
-                if let Some(segment) = Self::segment_for_end(segments, offset) {
-                    return segment.original_start + (offset - segment.logical_start);
-                }
-
-                // Fallback when the offset is not covered by any segment.
-                // Symmetric with map_start's fallback (segments.last().original_end()):
-                // when the offset is out of range, return the original position at the
-                // end of the last segment.
-                // Bug: the old code returned segments.first().original_start here,
-                // which is the opposite direction from map_start's fallback and could
-                // place a non-char-boundary offset into Span.end.
-                segments
-                    .last()
-                    .map(SourceSegment::original_end)
-                    .unwrap_or(*empty_original_offset)
-            }
-        }
-    }
-}
-
+/// A lightweight wrapper around `LocatingSlice` that maintains an absolute base offset.
+/// This ensures that Spans computed in child parsers (e.g., inside block content)
+/// remain relative to the original start of the document.
 #[derive(Clone)]
 pub struct InputSource<'i> {
     original: &'i str,
     logical: LocatingSlice<&'i str>,
-    source_map: SourceMap,
+    base: usize,
 }
 
 impl<'i> InputSource<'i> {
@@ -125,85 +25,22 @@ impl<'i> InputSource<'i> {
         Self {
             original: input,
             logical: LocatingSlice::new(input),
-            source_map: SourceMap::Identity { base },
-        }
-    }
-
-    pub fn new_segmented(
-        input: &'i str,
-        segments: Vec<SourceSegment>,
-        empty_original_offset: usize,
-    ) -> Self {
-        Self {
-            original: input,
-            logical: LocatingSlice::new(input),
-            source_map: SourceMap::Segmented {
-                segments,
-                empty_original_offset,
-            },
-        }
-    }
-
-    pub fn is_at_line_start(&self) -> bool {
-        let offset = self.logical.current_token_start();
-        offset == 0 || self.original.as_bytes().get(offset - 1) == Some(&b'\n')
-    }
-
-    /// Creates a child `InputSource` for a slice that was extracted from this source's
-    /// logical string starting at `logical_start`.
-    ///
-    /// For an Identity parent the child is also Identity with the correct base offset.
-    /// For a Segmented parent the child inherits the relevant segments, so positions
-    /// computed inside the child map correctly back to original file offsets even when
-    /// the content spans multiple lines (e.g. inside a markdown blockquote where each
-    /// line had its `> ` prefix stripped).
-    pub fn child_source_for_slice(&self, content: &'i str, logical_start: usize) -> Self {
-        let logical_end = logical_start + content.len();
-        match &self.source_map {
-            SourceMap::Identity { base } => InputSource::new_at(content, base + logical_start),
-            SourceMap::Segmented { segments, .. } => {
-                let child_segments: Vec<SourceSegment> = segments
-                    .iter()
-                    .filter(|seg| {
-                        seg.logical_start < logical_end && seg.logical_end() > logical_start
-                    })
-                    .map(|seg| {
-                        let clip_start = seg.logical_start.max(logical_start);
-                        let clip_end = seg.logical_end().min(logical_end);
-                        SourceSegment {
-                            logical_start: clip_start - logical_start,
-                            original_start: seg.original_start + (clip_start - seg.logical_start),
-                            len: clip_end - clip_start,
-                        }
-                    })
-                    .collect();
-                let empty_offset = self.source_map.map_start(logical_start);
-                InputSource::new_segmented(content, child_segments, empty_offset)
-            }
+            base,
         }
     }
 
     /// Creates a child `InputSource` for a `content` slice that was produced by
     /// reading from this source's logical stream.
     ///
-    /// The logical start offset is computed automatically via pointer arithmetic —
-    /// `content` must be a subslice of this source's logical string, which is
-    /// always the case when it comes from winnow stream operations
-    /// (`next_slice`, `take_till`, `.trim()`, etc.).
-    ///
-    /// This avoids requiring callers to explicitly track the logical offset.
+    /// The absolute offset is preserved by adding the relative offset of `content`
+    /// to the current `base`.
     pub fn child_source_for_content(&self, content: &'i str) -> Self {
-        let base = self.original.as_ptr() as usize;
-        let ptr = content.as_ptr() as usize;
-        debug_assert!(
-            ptr >= base && ptr + content.len() <= base + self.original.len(),
-            "content (ptr={ptr:#x}, len={}) is not a subslice of this source's logical string \
-             (base={base:#x}, len={})",
-            content.len(),
-            self.original.len(),
-        );
-        let logical_start = ptr - base;
-        self.child_source_for_slice(content, logical_start)
+        let parent_ptr = self.original.as_ptr() as usize;
+        let child_ptr = content.as_ptr() as usize;
+        
+        // Pointer arithmetic to find the relative offset within this slice
+        let logical_start = child_ptr - parent_ptr;
+        Self::new_at(content, self.base + logical_start)
     }
 }
 
@@ -297,12 +134,11 @@ impl<'i> Stream for InputSource<'i> {
 
 impl Location for InputSource<'_> {
     fn previous_token_end(&self) -> usize {
-        self.source_map.map_end(self.logical.previous_token_end())
+        self.logical.previous_token_end() + self.base
     }
 
     fn current_token_start(&self) -> usize {
-        self.source_map
-            .map_start(self.logical.current_token_start())
+        self.logical.current_token_start() + self.base
     }
 }
 
@@ -372,199 +208,38 @@ impl<'i> UpdateSlice for InputSource<'i> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use winnow::stream::Location;
 
-    /// Verifies that map_end's fallback is symmetric with map_start's fallback
-    /// (both point to the end of the last segment, not the start of the first).
-    /// Old bug: map_end fell back to segments.first().original_start, which is the
-    /// opposite direction and could write a non-char-boundary offset into Span.end.
     #[test]
-    fn map_end_fallback_symmetric_with_map_start() {
-        let segments = vec![SourceSegment {
-            logical_start: 0,
-            original_start: 10,
-            len: 6,
-        }];
-        let map = SourceMap::Segmented {
-            segments,
-            empty_original_offset: 0,
-        };
-
-        // offset == 6 (last byte of the only segment) must be found by segment_for_end
-        assert_eq!(map.map_end(6), 16);
-
-        // out-of-range: old bug returned 10, fixed returns 16 (= last().original_end())
-        assert_eq!(
-            map.map_end(100),
-            16,
-            "out-of-range offset must fall back to last().original_end()"
-        );
-        assert_eq!(
-            map.map_start(100),
-            map.map_end(100),
-            "map_start and map_end must agree on out-of-range offsets"
-        );
+    fn test_initial_base_offset() {
+        let input = "hello";
+        let source = InputSource::new_at(input, 100);
+        assert_eq!(source.current_token_start(), 100);
     }
 
-    /// Verifies that byte offsets within a multi-byte (Korean) segment map correctly.
     #[test]
-    fn map_end_korean_multibyte_within_segment() {
-        // "한글" is 6 bytes; logical[0..6] maps to original[5..11]
-        let segments = vec![SourceSegment {
-            logical_start: 0,
-            original_start: 5,
-            len: 6,
-        }];
-        let map = SourceMap::Segmented {
-            segments,
-            empty_original_offset: 0,
-        };
-        // logical 3 = start of '글' → original 8
-        assert_eq!(map.map_end(3), 8);
-        assert_eq!(map.map_start(3), 8);
-        // logical 6 = end of segment → original 11
-        assert_eq!(map.map_end(6), 11);
+    fn test_child_source_offset() {
+        let input = "0123456789";
+        let source = InputSource::new_at(input, 100);
+        
+        // "567" is at relative offset 5
+        let child_text = &input[5..8];
+        let child_source = source.child_source_for_content(child_text);
+        
+        // Absolute offset should be 100 (base) + 5 (relative) = 105
+        assert_eq!(child_source.current_token_start(), 105);
     }
 
-    /// Verifies boundary and second-segment mapping with two segments.
     #[test]
-    fn map_end_two_segments() {
-        let segments = vec![
-            SourceSegment {
-                logical_start: 0,
-                original_start: 0,
-                len: 3,
-            },
-            SourceSegment {
-                logical_start: 3,
-                original_start: 10,
-                len: 3,
-            },
-        ];
-        let map = SourceMap::Segmented {
-            segments,
-            empty_original_offset: 0,
-        };
-        assert_eq!(map.map_end(2), 2);
-        assert_eq!(map.map_end(3), 3); // end of seg1
-        assert_eq!(map.map_start(3), 10); // start of seg2
-        assert_eq!(map.map_end(5), 12);
-        assert_eq!(map.map_end(6), 13);
-        // out-of-range: last().original_end() = 13
-        assert_eq!(map.map_end(999), 13);
-    }
-
-    /// When segments is empty, returns empty_original_offset.
-    #[test]
-    fn map_end_empty_segments() {
-        let map = SourceMap::Segmented {
-            segments: vec![],
-            empty_original_offset: 42,
-        };
-        assert_eq!(map.map_end(0), 42);
-        assert_eq!(map.map_end(100), 42);
-        assert_eq!(map.map_start(0), 42);
-    }
-
-    /// Verifies that child_source_for_slice propagates segment mappings correctly
-    /// for a multi-line slice extracted from a Segmented parent.
-    ///
-    /// This is the core fix for the blockquote + multi-line brace content panic:
-    /// the old code used new_at(content, original_start) which assumed the original
-    /// file bytes matched the logical bytes 1:1 — wrong when "> " was stripped.
-    #[test]
-    fn child_source_for_slice_segmented_multiline() {
-        // Simulate: "> 가나다\n> 라마바\n"
-        // Original layout:
-        //   byte 0: '>'
-        //   byte 1: ' '
-        //   byte 2-10: "가나다" (9 bytes)
-        //   byte 11: '\n'
-        //   byte 12: '>'
-        //   byte 13: ' '
-        //   byte 14-22: "라마바" (9 bytes)
-        //   byte 23: '\n'
-        //
-        // Blockquote parser strips "> " from each line and produces:
-        //   logical: "가나다\n라마바\n"
-        //
-        // Segments:
-        //   {logical_start:0, original_start:2, len:9}   — "가나다"
-        //   {logical_start:9, original_start:11, len:1}  — "\n"
-        //   {logical_start:10, original_start:14, len:9} - "라마바"
-        //   {logical_start:19, original_start:23, len:1} — "\n"
-        let logical = "가나다\n라마바\n";
-        let segments = vec![
-            SourceSegment {
-                logical_start: 0,
-                original_start: 2,
-                len: 9,
-            },
-            SourceSegment {
-                logical_start: 9,
-                original_start: 11,
-                len: 1,
-            },
-            SourceSegment {
-                logical_start: 10,
-                original_start: 14,
-                len: 9,
-            },
-            SourceSegment {
-                logical_start: 19,
-                original_start: 23,
-                len: 1,
-            },
-        ];
-        let parent = InputSource::new_segmented(logical, segments, 0);
-
-        // A brace parser would extract the body between delimiters — here simulate
-        // extracting the full content "가나다\n라마바" starting at logical offset 0.
-        let content = "가나다\n라마바"; // 19 bytes (9 + 1 + 9)
-        let logical_start = 0usize;
-
-        let child = parent.child_source_for_slice(content, logical_start);
-
-        // The child should have segments covering "가나다" (0..9) and "\n" (9..10)
-        // and "라마바" (10..19), each remapped relative to logical_start=0.
-        // Verify by checking current_token_start mappings on the child:
-        // At logical 0: map_start(0) = original 2
-        use winnow::stream::Location as StreamLocation;
-        assert_eq!(
-            child.current_token_start(),
-            2,
-            "start of 가나다 must map to original 2"
-        );
-
-        // At logical 10 (start of "라마바"): map_start(10) = original 14
-        // We can't directly set the position, but we can verify the segment via map_start.
-        // Access the source_map indirectly through a temporary child:
-        let child2 = parent.child_source_for_slice(content, logical_start);
-        // The second segment in the child covers logical[10..19] → original[14..23].
-        // Check by creating a grandchild slice for "라마바" at logical 10.
-        let content2 = "라마바";
-        let grandchild = child2.child_source_for_slice(content2, 10);
-        assert_eq!(
-            grandchild.current_token_start(),
-            14,
-            "start of 라마바 must map to original 14"
-        );
-    }
-
-    /// Verifies that child_source_for_slice on an Identity parent behaves like new_at.
-    #[test]
-    fn child_source_for_slice_identity() {
-        let text = "hello world";
-        let parent = InputSource::new_at(text, 100);
-
-        use winnow::stream::Location as StreamLocation;
-
-        // Slice "world" starting at logical offset 6
-        let content = "world";
-        let child = parent.child_source_for_slice(content, 6);
-        assert_eq!(
-            child.current_token_start(),
-            106,
-            "identity: base + logical_start"
-        );
+    fn test_multibyte_utf8_offset() {
+        // "한글" is 6 bytes (3 bytes each)
+        let input = "한글 world";
+        let source = InputSource::new_at(input, 1000);
+        
+        // "world" starts after 6 bytes of "한글" and 1 space = 7 bytes
+        let child_text = &input[7..];
+        let child_source = source.child_source_for_content(child_text);
+        
+        assert_eq!(child_source.current_token_start(), 1007);
     }
 }

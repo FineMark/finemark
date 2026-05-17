@@ -14,5 +14,5 @@ mod text;
 mod token;
 mod utils;
 
-pub use input_source::{InputSource, SourceSegment};
+pub use input_source::InputSource;
 pub type ParserInput<'input> = Stateful<InputSource<'input>, ParseContext>;

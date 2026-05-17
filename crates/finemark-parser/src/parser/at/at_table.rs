@@ -4,7 +4,6 @@ use crate::parser::at::utils::{
     parse_optional_document_body,
 };
 use crate::parser::utils::parse_optional_brace_body;
-use crate::parser::{InputSource, SourceSegment};
 use finemark_ast::{
     Element, ErrorElement, Span, TableColumnElement, TableElement, TableRowElement,
 };
@@ -75,22 +74,8 @@ where
         });
     };
 
-    let content = body.content;
-    let content_start = body.content_start;
     let mut child_input = ParserInput {
-        input: InputSource::new_segmented(
-            content,
-            if content.is_empty() {
-                Vec::new()
-            } else {
-                vec![SourceSegment {
-                    logical_start: 0,
-                    original_start: content_start,
-                    len: content.len(),
-                }]
-            },
-            content_start,
-        ),
+        input: parser_input.input.child_source_for_content(body.content),
         state: parser_input.state.clone(),
     };
 

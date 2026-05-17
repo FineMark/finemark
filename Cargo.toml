@@ -28,7 +28,7 @@ memchr = "2.8.0"
 indexmap = { version = "2.14.0", features = ["serde"] }
 maud = "0.27.0"
 pretty = "0.12.5"
-criterion = { version = "0.8", features = ["html_reports"] }
+criterion = { version = "0.8.2", features = ["html_reports"] }
 
 [profile.dev]
 opt-level = 1

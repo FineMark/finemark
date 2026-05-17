@@ -2,7 +2,7 @@ use crate::parser::at::utils::{
     AfterClosePolicy, BodyWhitespacePolicy, parse_at_head, parse_optional_document_body,
 };
 use crate::parser::utils::parse_optional_brace_body;
-use crate::parser::{InputSource, ParserInput, SourceSegment};
+use crate::parser::{ParserInput};
 use finemark_ast::{Element, ErrorElement, ListElement, ListItem, Span};
 use winnow::Result;
 use winnow::combinator::repeat;
@@ -42,22 +42,8 @@ fn parse_list_body(parser_input: &mut ParserInput) -> Result<ParsedListBody> {
         });
     };
 
-    let content = body.content;
-    let content_start = body.content_start;
     let mut child_input = ParserInput {
-        input: InputSource::new_segmented(
-            content,
-            if content.is_empty() {
-                Vec::new()
-            } else {
-                vec![SourceSegment {
-                    logical_start: 0,
-                    original_start: content_start,
-                    len: content.len(),
-                }]
-            },
-            content_start,
-        ),
+        input: parser_input.input.child_source_for_content(body.content),
         state: parser_input.state.clone(),
     };
 

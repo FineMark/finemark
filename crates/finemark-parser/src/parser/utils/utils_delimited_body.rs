@@ -22,7 +22,6 @@ pub(crate) enum AfterClosePolicy {
 
 pub(crate) struct ParsedDelimitedBody<'i> {
     pub content: &'i str,
-    pub content_start: usize,
     pub open_span: Span,
     pub close_span: Span,
     pub end: usize,
@@ -36,9 +35,8 @@ pub(crate) fn parse_brace_body<'i>(
     let open_start = parser_input.current_token_start();
     literal("{").parse_next(parser_input)?;
     let open_end = parser_input.previous_token_end();
-    let content_start = parser_input.current_token_start();
     let raw = parse_raw_until_balanced_single_brace(parser_input)?;
-    let (content, leading_trimmed) = apply_body_policy(raw.value, body_policy);
+    let content = apply_body_policy(raw.value, body_policy);
 
     // Block-style bodies commonly use `@foo{\n  ...\n}` for readability.
     // Trimming here mirrors SevenMark's delimited-body policy and keeps
@@ -49,7 +47,6 @@ pub(crate) fn parse_brace_body<'i>(
 
     Ok(ParsedDelimitedBody {
         content,
-        content_start: content_start + leading_trimmed,
         open_span: Span {
             start: open_start,
             end: open_end,
@@ -73,16 +70,11 @@ pub(crate) fn parse_optional_brace_body<'i>(
     .parse_next(parser_input)
 }
 
-fn apply_body_policy(content: &str, policy: BodyWhitespacePolicy) -> (&str, usize) {
+fn apply_body_policy(content: &str, policy: BodyWhitespacePolicy) -> &str {
     match policy {
-        BodyWhitespacePolicy::Preserve => (content, 0),
-        BodyWhitespacePolicy::TrimAsciiWhitespace => {
-            let trimmed_start = content.trim_start_matches(|c: char| c.is_ascii_whitespace());
-            let leading_trimmed = content.len() - trimmed_start.len();
-            (
-                trimmed_start.trim_end_matches(|c: char| c.is_ascii_whitespace()),
-                leading_trimmed,
-            )
-        }
+        BodyWhitespacePolicy::Preserve => content,
+        BodyWhitespacePolicy::TrimAsciiWhitespace => content
+            .trim_start_matches(|c: char| c.is_ascii_whitespace())
+            .trim_end_matches(|c: char| c.is_ascii_whitespace()),
     }
 }
