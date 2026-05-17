@@ -3,7 +3,7 @@ use crate::parser::at::utils::{
     AfterClosePolicy, BodyWhitespacePolicy, parse_at_head, parse_optional_document_body,
 };
 use crate::parser::utils::{with_body, with_depth};
-use finemark_ast::{Element, ErrorElement, ListElement, ListItem, Span};
+use finemark_ast::{Element, ListElement, ListItem, Span};
 use winnow::Result;
 use winnow::ascii::multispace0;
 use winnow::combinator::opt;

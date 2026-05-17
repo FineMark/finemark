@@ -4,12 +4,13 @@ use crate::parser::at::{
     at_h6_parser, at_hline_parser, at_link_parser, at_list_parser, at_quote_parser,
     at_table_parser,
 };
-use crate::parser::code::{code_block_parser, inline_code_parser};
+use crate::parser::code::code_block_parser;
 use crate::parser::escape::escape_parser;
 use crate::parser::r#macro::macro_br_parser;
 use crate::parser::markdown::{
-    markdown_bold_parser, markdown_italic_parser, markdown_strikethrough_parser,
-    markdown_subscript_parser, markdown_superscript_parser, markdown_underline_parser,
+    markdown_bold_parser, markdown_inline_code_parser, markdown_italic_parser,
+    markdown_strikethrough_parser, markdown_subscript_parser, markdown_superscript_parser,
+    markdown_underline_parser,
 };
 use crate::parser::text::text_parser;
 use crate::parser::token::{
@@ -37,7 +38,7 @@ pub(crate) fn element_parser<'i>(parser_input: &mut ParserInput<'i>) -> Result<E
         '^' => alt((markdown_superscript_parser, token_caret_parser)),
         ',' => alt((markdown_subscript_parser, token_comma_parser)),
         '\\' => alt((escape_parser, token_backslash_parser)),
-        '`' => alt((code_block_parser, inline_code_parser)),
+        '`' => alt((code_block_parser, markdown_inline_code_parser)),
         '\n' => alt((token_paragraph_break_parser, token_newline_parser)),
          _ => text_parser,
     }

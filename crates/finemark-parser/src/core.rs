@@ -1,15 +1,14 @@
 use crate::context::ParseContext;
+use crate::parser::ParserInput;
 use crate::parser::document::document_parser;
-use crate::parser::{InputSource, ParserInput};
 use finemark_ast::{Element, ErrorElement, Span};
-use winnow::stream::Location as StreamLocation;
-use winnow::stream::Stream;
+use winnow::stream::{LocatingSlice, Location as StreamLocation, Stream};
 
 pub fn parse_document(input: &str) -> Vec<Element<'_>> {
-    let context = ParseContext::new();
+    let context = ParseContext::new(input);
 
     let mut stateful_input = ParserInput {
-        input: InputSource::new(input),
+        input: LocatingSlice::new(input),
         state: context,
     };
 

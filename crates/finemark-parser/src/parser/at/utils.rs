@@ -23,7 +23,17 @@ pub(crate) struct ParsedAtBody<'i> {
     pub end: usize,
 }
 
-pub(crate) use crate::parser::utils::{AfterClosePolicy, BodyWhitespacePolicy};
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum BodyWhitespacePolicy {
+    Preserve,
+    TrimAsciiWhitespace,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum AfterClosePolicy {
+    Preserve,
+    ConsumeWhitespace,
+}
 
 pub(crate) fn parse_at_head<'i>(
     parser_input: &mut ParserInput<'i>,

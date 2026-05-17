@@ -25,7 +25,9 @@ pub(crate) fn at_comment_parser<'i>(parser_input: &mut ParserInput<'i>) -> Resul
         }));
     };
 
-    let remaining = parser_input.input.peek_slice(parser_input.input.eof_offset());
+    let remaining = parser_input
+        .input
+        .peek_slice(parser_input.input.eof_offset());
     let Some(close_idx) = find_unescaped_close_brace(remaining) else {
         return Err(winnow::error::ContextError::new());
     };

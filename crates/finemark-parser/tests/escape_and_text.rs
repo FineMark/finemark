@@ -77,15 +77,15 @@ fn plain_text_is_single_node() {
     assert_eq!(t.value, "just plain text");
 }
 
-// ── Balanced brace body ───────────────────────────────────────────────────
+// ── Body closing braces ───────────────────────────────────────────────────
 
 #[test]
-fn body_with_nested_braces() {
+fn comment_body_closes_at_unescaped_brace() {
     let elems = parse_document("@comment{outer {inner} end}");
     let Element::Comment(c) = &elems[0] else {
         panic!("expected Comment")
     };
-    assert_eq!(c.value, "outer {inner} end");
+    assert_eq!(c.value, "outer {inner");
 }
 
 #[test]

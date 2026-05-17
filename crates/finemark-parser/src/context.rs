@@ -12,21 +12,23 @@ pub enum ParseGuard {
 }
 
 #[derive(Debug, Clone)]
-pub struct ParseContext {
+pub struct ParseContext<'i> {
     pub recursion_depth: usize,
     pub body_depth: usize,
+    pub original_input: &'i [u8],
     /// Active parse guards. The same guard must be exited in LIFO order.
     pub guard_stack: Vec<ParseGuard>,
     pub max_recursion_depth: usize,
     pub section_counter: usize,
 }
 
-impl ParseContext {
+impl<'i> ParseContext<'i> {
     // Creates the default parser context for a top-level document parse.
-    pub fn new() -> Self {
+    pub fn new(input: &'i str) -> Self {
         Self {
             recursion_depth: 0,
             body_depth: 0,
+            original_input: input.as_bytes(),
             guard_stack: Vec::new(),
             max_recursion_depth: 16,
             section_counter: 1,
@@ -59,6 +61,10 @@ impl ParseContext {
 
     pub fn is_in_body(&self) -> bool {
         self.body_depth > 0
+    }
+
+    pub fn is_at_line_start(&self, offset: usize) -> bool {
+        offset == 0 || self.original_input.get(offset - 1) == Some(&b'\n')
     }
 
     pub fn is_at_max_depth(&self) -> bool {
