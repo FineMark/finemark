@@ -1,10 +1,10 @@
-pub mod token_asterisk;
-pub mod token_at;
-pub mod token_backslash;
-pub mod token_caret;
-pub mod token_comma;
-pub mod token_tilde;
-pub mod token_undescore;
+mod token_asterisk;
+mod token_at;
+mod token_backslash;
+mod token_caret;
+mod token_comma;
+mod token_tilde;
+mod token_undescore;
 
 pub use token_asterisk::*;
 pub use token_at::*;

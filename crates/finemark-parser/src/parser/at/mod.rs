@@ -1,10 +1,10 @@
-pub mod at_comment;
-pub mod at_heading;
-pub mod at_hline;
-pub mod at_link;
-pub mod at_list;
-pub mod at_quote;
-pub mod at_table;
+mod at_comment;
+mod at_heading;
+mod at_hline;
+mod at_link;
+mod at_list;
+mod at_quote;
+mod at_table;
 mod utils;
 
 pub(crate) use at_comment::*;

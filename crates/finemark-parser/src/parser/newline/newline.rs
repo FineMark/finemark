@@ -1,8 +1,8 @@
-use crate::parser::utils::line_break;
 use crate::parser::ParserInput;
+use crate::parser::utils::line_break;
 use finemark_ast::{Element, SoftBreakElement, Span};
-use winnow::stream::Location as StreamLocation;
 use winnow::Result;
+use winnow::stream::Location as StreamLocation;
 
 pub fn token_newline_parser(parser_input: &mut ParserInput) -> Result<Element> {
     let start = parser_input.current_token_start();

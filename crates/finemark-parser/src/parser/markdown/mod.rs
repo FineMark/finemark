@@ -1,9 +1,9 @@
-pub mod markdown_bold;
-pub mod markdown_italic;
-pub mod markdown_strikethrough;
-pub mod markdown_subscript;
-pub mod markdown_superscript;
-pub mod markdown_underline;
+mod markdown_bold;
+mod markdown_italic;
+mod markdown_strikethrough;
+mod markdown_subscript;
+mod markdown_superscript;
+mod markdown_underline;
 mod utils;
 
 pub(crate) use markdown_bold::*;

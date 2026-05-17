@@ -1,4 +1,4 @@
 #[allow(clippy::module_inception)]
-pub mod text;
+mod text;
 
 pub use text::*;

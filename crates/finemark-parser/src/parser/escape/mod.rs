@@ -1,4 +1,4 @@
 #[allow(clippy::module_inception)]
-pub mod escape;
+mod escape;
 
 pub use escape::*;
