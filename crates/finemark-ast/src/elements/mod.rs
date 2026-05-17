@@ -23,6 +23,10 @@ pub enum Element {
     List(ListElement),
     HLine(HLineElement),
     CodeBlock(CodeBlockElement),
+
+    // Line elements
+    SoftBreak(SoftBreakElement),
+    HardBreak(HardBreakElement),
 }
 
 impl Element {
@@ -39,6 +43,8 @@ impl Element {
             Element::List(element) => &element.span,
             Element::HLine(element) => &element.span,
             Element::CodeBlock(element) => &element.span,
+            Element::SoftBreak(e) => &e.span,
+            Element::HardBreak(e) => &e.span,
         }
     }
 }

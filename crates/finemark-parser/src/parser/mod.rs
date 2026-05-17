@@ -2,11 +2,13 @@ use crate::context::ParseContext;
 use winnow::stream::Stateful;
 
 mod block;
+mod comment;
 pub(crate) mod document;
 pub(crate) mod element;
 mod escape;
 mod input_source;
 mod markdown;
+mod text;
 mod token;
 mod utils;
 

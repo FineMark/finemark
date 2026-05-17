@@ -16,6 +16,18 @@ pub struct CommentElement {
 }
 
 #[derive(Debug, Clone, Serialize)]
+pub struct SoftBreakElement {
+    #[cfg_attr(not(feature = "include_locations"), serde(skip_serializing))]
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct HardBreakElement {
+    #[cfg_attr(not(feature = "include_locations"), serde(skip_serializing))]
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, Serialize)]
 pub struct EscapeElement {
     #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub span: Span,
