@@ -2,9 +2,15 @@
   <img src="assets/finemark_banner.png" alt="FineMark" width="100%">
 </p>
 
-<p align="center">FineMark is a structured markup language for clean, composable documents.</p>
+<p align="center">FineMark is a structured document language.</p>
 
 <p align="center">
+  <a href="https://crates.io/crates/finemark-ast">
+    <img alt="crates.io finemark-ast" src="https://img.shields.io/crates/v/finemark-ast" />
+  </a>
+  <a href="https://crates.io/crates/finemark-parser">
+    <img alt="crates.io finemark-parser" src="https://img.shields.io/crates/v/finemark-parser" />
+  </a>
   <img alt="Rust" src="https://img.shields.io/badge/rust-2024-orange" />
   <a href="https://github.com/FineMark/finemark/blob/main/LICENSE-APACHE">
     <img alt="License: Apache-2.0 OR MIT" src="https://img.shields.io/badge/license-Apache--2.0%20OR%20MIT-blue" />
@@ -16,30 +22,6 @@
   · <a href="https://github.com/FineMark/finemark/issues">Issues</a>
   · <a href="https://github.com/FineMark/finemark/discussions">Discussions</a>
 </p>
-
-## What is FineMark
-
-FineMark is a markup language for writing structured documents with simple,
-explicit syntax.
-
-It is designed to keep authoring readable while making document structure easy
-to parse, transform, and render.
-
-## Why FineMark
-
-- Simple, explicit document structure
-- Nested block syntax without ambiguous parsing
-- Built for tooling, not just display
-- Rust-first implementation
-
-## Example
-
-```text
-@quote {
-  @h1{FineMark}
-  Clean structure. Minimal syntax.
-}
-```
 
 ## Contributors
 
