@@ -1,4 +1,3 @@
-use crate::context::BlockMode;
 use crate::core::parse_document_input;
 use crate::parser::ParserInput;
 use finemark_ast::Element;
@@ -44,11 +43,6 @@ pub fn parse_nested_document_at<'i>(
     content: &'i str,
 ) -> Result<Vec<Element>> {
     parse_child_with_depth_at(parent_input, content, |child_input| {
-        let previous_block_mode = child_input
-            .state
-            .replace_block_mode(BlockMode::NestedDocument);
-        let parsed_content = parse_document_input(child_input);
-        child_input.state.replace_block_mode(previous_block_mode);
-        Ok(parsed_content)
+        Ok(parse_document_input(child_input))
     })
 }

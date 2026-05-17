@@ -1,4 +1,4 @@
-use crate::{Element, Span};
+use crate::{Element, Parameters, Span};
 use serde::Serialize;
 
 #[derive(Debug, Clone, Serialize)]
@@ -8,8 +8,8 @@ pub struct HeadingElement {
     #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub marker_span: Span,
     pub level: u8,
-    pub is_folded: bool,
     pub section_index: usize,
+    pub parameters: Parameters,
     pub children: Vec<Element>,
 }
 
@@ -19,6 +19,7 @@ pub struct BlockQuoteElement {
     pub span: Span,
     #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub marker_spans: Vec<Span>,
+    pub parameters: Parameters,
     pub children: Vec<Element>,
 }
 
@@ -26,6 +27,7 @@ pub struct BlockQuoteElement {
 pub struct HLineElement {
     #[cfg_attr(not(feature = "include-locations"), serde(skip_serializing))]
     pub span: Span,
+    pub parameters: Parameters,
 }
 
 #[derive(Debug, Clone, Serialize)]

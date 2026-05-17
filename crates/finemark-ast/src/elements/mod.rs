@@ -1,11 +1,15 @@
 mod block;
 mod leaf;
 mod list;
+mod parameter;
+mod table;
 
 pub use block::*;
 pub use leaf::*;
 pub use list::*;
+pub use parameter::*;
 use serde::Serialize;
+pub use table::*;
 
 #[derive(Debug, Clone, Serialize)]
 pub enum Element {
@@ -14,6 +18,7 @@ pub enum Element {
     Comment(CommentElement),
     Escape(EscapeElement),
     Error(ErrorElement),
+    Link(LinkElement),
 
     // Block elements
     Heading(HeadingElement),
@@ -23,6 +28,9 @@ pub enum Element {
     List(ListElement),
     HLine(HLineElement),
     CodeBlock(CodeBlockElement),
+    Table(TableElement),
+    TableRow(TableRowElement),
+    TableColumn(TableColumnElement),
 
     // Line elements
     SoftBreak(SoftBreakElement),
@@ -36,6 +44,7 @@ impl Element {
             Element::Comment(element) => &element.span,
             Element::Escape(element) => &element.span,
             Element::Error(element) => &element.span,
+            Element::Link(element) => &element.span,
             Element::Heading(element) => &element.span,
             Element::InlineCode(element) => &element.span,
             Element::TeX(element) => &element.span,
@@ -43,6 +52,9 @@ impl Element {
             Element::List(element) => &element.span,
             Element::HLine(element) => &element.span,
             Element::CodeBlock(element) => &element.span,
+            Element::Table(element) => &element.span,
+            Element::TableRow(element) => &element.span,
+            Element::TableColumn(element) => &element.span,
             Element::SoftBreak(e) => &e.span,
             Element::HardBreak(e) => &e.span,
         }

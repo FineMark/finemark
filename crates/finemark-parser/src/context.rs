@@ -1,13 +1,5 @@
 use crate::error::FineMarkError;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
-pub enum BlockMode {
-    #[default]
-    FullDocument,
-    NestedDocument,
-    InlineContent,
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ParseGuard {
     Bold,
@@ -22,7 +14,6 @@ pub enum ParseGuard {
 #[derive(Debug, Clone)]
 pub struct ParseContext {
     pub recursion_depth: usize,
-    pub block_mode: BlockMode,
     /// Active parse guards. The same guard must be exited in LIFO order.
     pub guard_stack: Vec<ParseGuard>,
     pub max_recursion_depth: usize,
@@ -34,7 +25,6 @@ impl ParseContext {
     pub fn new() -> Self {
         Self {
             recursion_depth: 0,
-            block_mode: BlockMode::FullDocument,
             guard_stack: Vec::new(),
             max_recursion_depth: 16,
             section_counter: 1,
@@ -74,12 +64,6 @@ impl ParseContext {
         let idx = self.section_counter;
         self.section_counter += 1;
         idx
-    }
-
-    pub fn replace_block_mode(&mut self, mode: BlockMode) -> BlockMode {
-        let previous = self.block_mode;
-        self.block_mode = mode;
-        previous
     }
 
     pub fn is_guard_active(&self, guard: ParseGuard) -> bool {

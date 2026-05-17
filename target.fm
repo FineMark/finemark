@@ -1,1 +1,29 @@
-// awefawef
+@h1[fold]{FineMark @ Syntax}
+
+@h2{Links}
+Plain URLs stay as text: https://example.com
+@link[href="https://example.com", label="Example ] site"]{Visit Example}
+
+@h2{Quote}
+@quote[cite="https://example.com/quote"]{
+  This is quoted content.
+  @link[href="https://example.com/source"]{Source}
+}
+
+@h2{Table}
+@table[class="compact"]{
+  @row[head]{
+    @column{Name}
+    @column{Value}
+  }
+  @row{
+    @column[span="2"]{
+      Nested content can use normal elements like @link[href="https://example.com"]{links}.
+    }
+  }
+}
+
+@hline
+
+@h3{Unknown At Names}
+Unknown commands fall back to text: @unknown[value="x"]{not parsed as command}
