@@ -29,6 +29,6 @@ include-locations = ["finemark-ast/include-locations"]
 # name = "gen_expected"
 # required-features = ["include-locations"]
 
-# [[test]]
-# name = "comprehensive_parser_tests"
-# required-features = ["include-locations"]
+[[test]]
+name = "parser_fixtures"
+required-features = ["include-locations"]

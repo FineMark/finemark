@@ -1,0 +1,9 @@
+@table[class="compact"]{
+  @row[head]{
+    @column{Name}
+    @column{Value}
+  }
+  @row{
+    @column[span="2"]{Merged}
+  }
+}

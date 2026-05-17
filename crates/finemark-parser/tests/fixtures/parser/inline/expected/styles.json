@@ -1,0 +1,271 @@
+[
+  {
+    "Bold": {
+      "span": {
+        "start": 0,
+        "end": 8
+      },
+      "open_span": {
+        "start": 0,
+        "end": 2
+      },
+      "close_span": {
+        "start": 6,
+        "end": 8
+      },
+      "children": [
+        {
+          "Text": {
+            "span": {
+              "start": 2,
+              "end": 6
+            },
+            "value": "bold"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Text": {
+      "span": {
+        "start": 8,
+        "end": 9
+      },
+      "value": " "
+    }
+  },
+  {
+    "Italic": {
+      "span": {
+        "start": 9,
+        "end": 17
+      },
+      "open_span": {
+        "start": 9,
+        "end": 10
+      },
+      "close_span": {
+        "start": 16,
+        "end": 17
+      },
+      "children": [
+        {
+          "Text": {
+            "span": {
+              "start": 10,
+              "end": 16
+            },
+            "value": "italic"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Text": {
+      "span": {
+        "start": 17,
+        "end": 18
+      },
+      "value": " "
+    }
+  },
+  {
+    "Strikethrough": {
+      "span": {
+        "start": 18,
+        "end": 28
+      },
+      "open_span": {
+        "start": 18,
+        "end": 20
+      },
+      "close_span": {
+        "start": 26,
+        "end": 28
+      },
+      "children": [
+        {
+          "Text": {
+            "span": {
+              "start": 20,
+              "end": 26
+            },
+            "value": "strike"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Text": {
+      "span": {
+        "start": 28,
+        "end": 29
+      },
+      "value": " "
+    }
+  },
+  {
+    "Underline": {
+      "span": {
+        "start": 29,
+        "end": 38
+      },
+      "open_span": {
+        "start": 29,
+        "end": 31
+      },
+      "close_span": {
+        "start": 36,
+        "end": 38
+      },
+      "children": [
+        {
+          "Text": {
+            "span": {
+              "start": 31,
+              "end": 36
+            },
+            "value": "under"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Text": {
+      "span": {
+        "start": 38,
+        "end": 39
+      },
+      "value": " "
+    }
+  },
+  {
+    "Superscript": {
+      "span": {
+        "start": 39,
+        "end": 48
+      },
+      "open_span": {
+        "start": 39,
+        "end": 41
+      },
+      "close_span": {
+        "start": 46,
+        "end": 48
+      },
+      "children": [
+        {
+          "Text": {
+            "span": {
+              "start": 41,
+              "end": 46
+            },
+            "value": "super"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Text": {
+      "span": {
+        "start": 48,
+        "end": 49
+      },
+      "value": " "
+    }
+  },
+  {
+    "Subscript": {
+      "span": {
+        "start": 49,
+        "end": 56
+      },
+      "open_span": {
+        "start": 49,
+        "end": 51
+      },
+      "close_span": {
+        "start": 54,
+        "end": 56
+      },
+      "children": [
+        {
+          "Text": {
+            "span": {
+              "start": 51,
+              "end": 54
+            },
+            "value": "sub"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Text": {
+      "span": {
+        "start": 56,
+        "end": 57
+      },
+      "value": " "
+    }
+  },
+  {
+    "Bold": {
+      "span": {
+        "start": 57,
+        "end": 67
+      },
+      "open_span": {
+        "start": 57,
+        "end": 59
+      },
+      "close_span": {
+        "start": 65,
+        "end": 67
+      },
+      "children": [
+        {
+          "Italic": {
+            "span": {
+              "start": 59,
+              "end": 65
+            },
+            "open_span": {
+              "start": 59,
+              "end": 60
+            },
+            "close_span": {
+              "start": 64,
+              "end": 65
+            },
+            "children": [
+              {
+                "Text": {
+                  "span": {
+                    "start": 60,
+                    "end": 64
+                  },
+                  "value": "both"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "SoftBreak": {
+      "span": {
+        "start": 67,
+        "end": 68
+      }
+    }
+  }
+]

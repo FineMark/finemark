@@ -22,6 +22,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added inline markdown text styles for bold, italic, strikethrough, underline, superscript, and subscript.
 - Added text-style AST nodes with open and close delimiter spans.
 - Added parser tests for inline markdown text styles and nested `***...***` bold/italic parsing.
+- Added location-aware parser fixture tests with checked-in `.fm` inputs and `.json` expected outputs.
+- Added fixture newline normalization so CRLF checkouts compare against LF-based spans consistently.
+- Added parser coverage for bare `\r` as text rather than a FineMark line break.
 
 ### Changed
 
