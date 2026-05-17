@@ -77,6 +77,76 @@
     }
   },
   {
+    "ParagraphBreak": {}
+  },
+  {
+    "Bold": {
+      "children": [
+        {
+          "Text": {
+            "value": "bold"
+          }
+        }
+      ]
+    }
+  },
+  {
     "SoftBreak": {}
+  },
+  {
+    "Bold": {
+      "children": [
+        {
+          "Italic": {
+            "children": [
+              {
+                "Text": {
+                  "value": "bolditalic"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "SoftBreak": {}
+  },
+  {
+    "Italic": {
+      "children": [
+        {
+          "Text": {
+            "value": "italic"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "SoftBreak": {}
+  },
+  {
+    "Strikethrough": {
+      "children": [
+        {
+          "Text": {
+            "value": "aweofjew"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Subscript": {
+      "children": [
+        {
+          "Text": {
+            "value": "awefawef"
+          }
+        }
+      ]
+    }
   }
 ]

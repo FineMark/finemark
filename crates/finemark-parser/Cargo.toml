@@ -21,6 +21,9 @@ paste.workspace = true
 serde_json.workspace = true
 memchr.workspace = true
 
+[dev-dependencies]
+criterion.workspace = true
+
 [features]
 default = []
 include-locations = ["finemark-ast/include-locations"]
@@ -28,6 +31,10 @@ include-locations = ["finemark-ast/include-locations"]
 [[example]]
 name = "gen_expected"
 required-features = ["include-locations"]
+
+[[bench]]
+name = "parser"
+harness = false
 
 [[test]]
 name = "parser_fixtures"
