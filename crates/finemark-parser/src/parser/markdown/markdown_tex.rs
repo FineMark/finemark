@@ -1,10 +1,11 @@
 use crate::parser::ParserInput;
 use finemark_ast::{Element, Span, TeXElement};
+use memchr::{memchr, memmem};
 use winnow::Result;
 use winnow::combinator::alt;
 use winnow::prelude::*;
 use winnow::stream::{Location as StreamLocation, Stream};
-use winnow::token::{any, literal};
+use winnow::token::literal;
 
 pub(crate) fn markdown_tex_parser<'i>(parser_input: &mut ParserInput<'i>) -> Result<Element<'i>> {
     alt((tex_block_parser, tex_inline_parser)).parse_next(parser_input)
@@ -59,14 +60,18 @@ fn consume_until_delimiter(
     delimiter: &'static str,
     allow_newline: bool,
 ) -> Result<()> {
-    loop {
-        if parser_input.input.starts_with(delimiter) {
-            return Ok(());
-        }
-        if parser_input.input.is_empty() || (!allow_newline && parser_input.input.starts_with("\n"))
-        {
-            return Err(winnow::error::ContextError::new());
-        }
-        any.parse_next(parser_input)?;
+    let remaining = parser_input
+        .input
+        .peek_slice(parser_input.input.eof_offset());
+    let delimiter_offset = memmem::find(remaining.as_bytes(), delimiter.as_bytes());
+    let Some(content_len) = delimiter_offset else {
+        return Err(winnow::error::ContextError::new());
+    };
+
+    if !allow_newline && memchr(b'\n', &remaining.as_bytes()[..content_len]).is_some() {
+        return Err(winnow::error::ContextError::new());
     }
+
+    parser_input.input.next_slice(content_len);
+    Ok(())
 }

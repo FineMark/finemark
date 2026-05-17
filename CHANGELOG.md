@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2026-05-17
+
+### Added
+
+- Added fenced code block parsing with CommonMark-style backtick fence length matching and FineMark command parameters, e.g. ```` ```(lang="rust") ````.
+- Added inline code parsing with matching backtick-run delimiters.
+- Added TeX parsing for inline `$...$` and block `$$...$$` content.
+- Added parser tests for code fence indentation, trailing text rejection, inline code delimiter matching, and TeX parsing.
+
+### Changed
+
+- Changed AST text-like values from owned `String` storage to zero-copy `&str` slices tied to the input document lifetime.
+- Changed parser input handling to use `winnow::stream::LocatingSlice` directly.
+- Changed line-start detection to use the original input byte slice instead of maintaining parser-mutated line-start state.
+- Changed `@` body parsing to parse children directly from the active stream instead of creating segmented child input sources.
+- Changed raw code and TeX content scanning to use byte-oriented `memchr`/`memmem` searches while preserving byte-accurate spans.
+- Changed body whitespace trimming to avoid repeated `Vec::remove(0)` shifts.
+
+### Removed
+
+- Removed the custom `InputSource` and source-segment mapping layer from the parser.
+- Removed balanced raw block/body scanners that are no longer needed for structured document bodies.
+
 ## [0.1.1] - 2026-05-17
 
 ### Added
@@ -75,5 +98,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Token parsers for future inline constructs remain in place even when not yet wired into the active grammar.
 - Recursion depth is capped at 16 levels; AT command bodies that exceed the limit fall back to plain text.
-
-[0.1.0]: https://github.com/FineMark/finemark/releases/tag/v0.1.0

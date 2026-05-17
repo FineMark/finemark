@@ -115,12 +115,20 @@ fn apply_body_policy_to_elements<'i>(
         return children;
     }
 
-    while children.first().is_some_and(is_ascii_whitespace_element) {
-        children.remove(0);
+    let start = children
+        .iter()
+        .position(|element| !is_ascii_whitespace_element(element))
+        .unwrap_or(children.len());
+    if start > 0 {
+        children.drain(..start);
     }
-    while children.last().is_some_and(is_ascii_whitespace_element) {
-        children.pop();
-    }
+
+    let end = children
+        .iter()
+        .rposition(|element| !is_ascii_whitespace_element(element))
+        .map_or(0, |idx| idx + 1);
+    children.truncate(end);
+
     children
 }
 

@@ -1,12 +1,13 @@
 use crate::parser::ParserInput;
 use crate::parser::parameter::parameter_core_parser;
 use finemark_ast::{CodeBlockElement, Element, Span};
+use memchr::memchr;
 use winnow::Result;
 use winnow::ascii::space0;
 use winnow::combinator::opt;
 use winnow::prelude::*;
 use winnow::stream::{Location as StreamLocation, Stream};
-use winnow::token::{any, literal, take_while};
+use winnow::token::{literal, take_while};
 
 pub(crate) fn code_block_parser<'i>(parser_input: &mut ParserInput<'i>) -> Result<Element<'i>> {
     let start = parser_input.current_token_start();
@@ -61,18 +62,16 @@ fn consume_until_closing_fence(parser_input: &mut ParserInput<'_>, fence_len: us
             return Err(winnow::error::ContextError::new());
         }
 
-        consume_line(parser_input)?;
+        consume_line_chunk(parser_input);
     }
 }
 
-fn consume_line(parser_input: &mut ParserInput<'_>) -> Result<()> {
-    while !parser_input.input.is_empty() {
-        let token = any.parse_next(parser_input)?;
-        if token == '\n' {
-            break;
-        }
-    }
-    Ok(())
+fn consume_line_chunk(parser_input: &mut ParserInput<'_>) {
+    let remaining = parser_input
+        .input
+        .peek_slice(parser_input.input.eof_offset());
+    let len = memchr(b'\n', remaining.as_bytes()).map_or(remaining.len(), |offset| offset + 1);
+    parser_input.input.next_slice(len);
 }
 
 fn parse_closing_fence(parser_input: &mut ParserInput<'_>, fence_len: usize) -> Result<()> {
