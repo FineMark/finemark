@@ -16,8 +16,8 @@ readme = "README.md"
 
 [workspace.dependencies]
 # Internal crates
-finemark-ast = {path = "crates/finemark-ast"}
-finemark-parser = { path = "crates/finemark-parser" }
+finemark-ast = { path = "crates/finemark-ast", version = "0.1.0" }
+finemark-parser = { path = "crates/finemark-parser", version = "0.1.0" }
 
 # External dependencies
 winnow = { version = "1.0.3", features = ["simd"] }
