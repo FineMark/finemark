@@ -3,6 +3,7 @@ use crate::parser::parameter::parameter_core_parser;
 use crate::parser::utils::{parse_nested_document_at, parse_optional_brace_body};
 use finemark_ast::{Element, Parameters, Span};
 use winnow::Result;
+use winnow::ascii::multispace0;
 use winnow::combinator::opt;
 use winnow::prelude::*;
 use winnow::stream::Location as StreamLocation;
@@ -32,6 +33,8 @@ pub(crate) fn parse_at_head(
     literal(keyword).parse_next(parser_input)?;
     let open_end = parser_input.previous_token_end();
 
+    // Allow optional whitespace between the keyword and the opening `[`.
+    multispace0.parse_next(parser_input)?;
     let parameters = opt(parameter_core_parser)
         .parse_next(parser_input)?
         .unwrap_or_default();
@@ -51,6 +54,8 @@ pub(crate) fn parse_optional_document_body(
     body_policy: BodyWhitespacePolicy,
     after_close_policy: AfterClosePolicy,
 ) -> Result<ParsedAtBody> {
+    // Allow optional whitespace between the parameter list (or keyword) and `{`.
+    multispace0.parse_next(parser_input)?;
     let body = parse_optional_brace_body(parser_input, body_policy, after_close_policy)?;
     let Some(body) = body else {
         let end = parser_input.previous_token_end();

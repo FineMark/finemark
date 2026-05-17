@@ -12,7 +12,17 @@
       "children": [
         {
           "Text": {
-            "value": "FineMark @ Syntax"
+            "value": "FineMark "
+          }
+        },
+        {
+          "Text": {
+            "value": "@"
+          }
+        },
+        {
+          "Text": {
+            "value": " Syntax"
           }
         }
       ]
@@ -118,7 +128,30 @@
         },
         {
           "Text": {
-            "value": "  @link[href=\"https://example.com/source\"]{Source}"
+            "value": "  "
+          }
+        },
+        {
+          "Link": {
+            "parameters": {
+              "href": {
+                "key": "href",
+                "value": [
+                  {
+                    "Text": {
+                      "value": "https://example.com/source"
+                    }
+                  }
+                ]
+              }
+            },
+            "children": [
+              {
+                "Text": {
+                  "value": "Source"
+                }
+              }
+            ]
           }
         }
       ]
@@ -210,7 +243,35 @@
                   "children": [
                     {
                       "Text": {
-                        "value": "Nested content can use normal elements like @link[href=\"https://example.com\"]{links}."
+                        "value": "Nested content can use normal elements like "
+                      }
+                    },
+                    {
+                      "Link": {
+                        "parameters": {
+                          "href": {
+                            "key": "href",
+                            "value": [
+                              {
+                                "Text": {
+                                  "value": "https://example.com"
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "children": [
+                          {
+                            "Text": {
+                              "value": "links"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "Text": {
+                        "value": "."
                       }
                     }
                   ]
@@ -228,12 +289,6 @@
     }
   },
   {
-    "SoftBreak": {}
-  },
-  {
-    "SoftBreak": {}
-  },
-  {
     "Heading": {
       "level": 3,
       "section_index": 5,
@@ -249,7 +304,17 @@
   },
   {
     "Text": {
-      "value": "Unknown commands fall back to text: @unknown[value=\"x\"]{not parsed as command}"
+      "value": "Unknown commands fall back to text: "
+    }
+  },
+  {
+    "Text": {
+      "value": "@"
+    }
+  },
+  {
+    "Text": {
+      "value": "unknown[value=\"x\"]{not parsed as command}"
     }
   },
   {

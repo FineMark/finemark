@@ -11,7 +11,7 @@ pub fn text_parser(parser_input: &mut ParserInput) -> Result<Element> {
     let parsed_content = take_while(1.., |c: char| {
         // Unknown `@name[...]` forms are plain text. Command bodies are sliced
         // by the balanced body scanner, so `}` is not a text terminator here.
-        !matches!(c, '*' | '_' | '~' | '^' | ',' | '\\') && !is_line_end_char(c)
+        !matches!(c, '@' | '*' | '_' | '~' | '^' | ',' | '\\') && !is_line_end_char(c)
     })
     .parse_next(parser_input)?;
     let end = parser_input.previous_token_end();
