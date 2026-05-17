@@ -5,7 +5,7 @@ use finemark_ast::{Element, ErrorElement, Span};
 use winnow::stream::Location as StreamLocation;
 use winnow::stream::Stream;
 
-pub fn parse_document(input: &str) -> Vec<Element> {
+pub fn parse_document(input: &str) -> Vec<Element<'_>> {
     let context = ParseContext::new();
 
     let mut stateful_input = ParserInput {
@@ -16,7 +16,7 @@ pub fn parse_document(input: &str) -> Vec<Element> {
     parse_document_input(&mut stateful_input)
 }
 
-pub(crate) fn parse_document_input(parser_input: &mut ParserInput) -> Vec<Element> {
+pub(crate) fn parse_document_input<'i>(parser_input: &mut ParserInput<'i>) -> Vec<Element<'i>> {
     let initial_checkpoint = parser_input.checkpoint();
     let initial_state = parser_input.state.clone();
 
@@ -25,7 +25,7 @@ pub(crate) fn parse_document_input(parser_input: &mut ParserInput) -> Vec<Elemen
             // Parse remaining content as Error element if any
             if !parser_input.input.is_empty() {
                 let start = parser_input.current_token_start();
-                let remaining = parser_input.input.peek_finish().to_string();
+                let remaining = parser_input.input.peek_finish();
                 parser_input.input.finish();
                 let end = parser_input.previous_token_end();
 
@@ -42,7 +42,7 @@ pub(crate) fn parse_document_input(parser_input: &mut ParserInput) -> Vec<Elemen
             parser_input.state = initial_state;
 
             let start = parser_input.current_token_start();
-            let value = parser_input.input.peek_finish().to_string();
+            let value = parser_input.input.peek_finish();
             parser_input.input.finish();
             let end = parser_input.previous_token_end();
 

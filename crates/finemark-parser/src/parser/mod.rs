@@ -2,6 +2,7 @@ use crate::context::ParseContext;
 use winnow::stream::Stateful;
 
 mod at;
+mod code;
 pub(crate) mod document;
 pub(crate) mod element;
 mod escape;

@@ -5,7 +5,7 @@ use crate::parser::at::utils::{
 use finemark_ast::{BlockQuoteElement, Element, Span};
 use winnow::Result;
 
-pub(crate) fn at_quote_parser(parser_input: &mut ParserInput) -> Result<Element> {
+pub(crate) fn at_quote_parser<'i>(parser_input: &mut ParserInput<'i>) -> Result<Element<'i>> {
     let head = parse_at_head(parser_input, "quote")?;
     let body = parse_optional_document_body(
         parser_input,

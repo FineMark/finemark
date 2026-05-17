@@ -14,6 +14,7 @@ pub enum ParseGuard {
 #[derive(Debug, Clone)]
 pub struct ParseContext {
     pub recursion_depth: usize,
+    pub body_depth: usize,
     /// Active parse guards. The same guard must be exited in LIFO order.
     pub guard_stack: Vec<ParseGuard>,
     pub max_recursion_depth: usize,
@@ -25,6 +26,7 @@ impl ParseContext {
     pub fn new() -> Self {
         Self {
             recursion_depth: 0,
+            body_depth: 0,
             guard_stack: Vec::new(),
             max_recursion_depth: 16,
             section_counter: 1,
@@ -45,6 +47,18 @@ impl ParseContext {
 
     pub fn decrease_depth(&mut self) {
         self.recursion_depth = self.recursion_depth.saturating_sub(1);
+    }
+
+    pub fn enter_body(&mut self) {
+        self.body_depth += 1;
+    }
+
+    pub fn exit_body(&mut self) {
+        self.body_depth = self.body_depth.saturating_sub(1);
+    }
+
+    pub fn is_in_body(&self) -> bool {
+        self.body_depth > 0
     }
 
     pub fn is_at_max_depth(&self) -> bool {

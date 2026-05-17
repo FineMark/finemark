@@ -19,6 +19,16 @@ where
     result
 }
 
+pub fn with_body<'i, T, F>(input: &mut ParserInput<'i>, parser: F) -> Result<T>
+where
+    F: FnOnce(&mut ParserInput<'i>) -> Result<T>,
+{
+    input.state.enter_body();
+    let result = parser(input);
+    input.state.exit_body();
+    result
+}
+
 pub fn parse_child_with_depth_at<'i, T, F>(
     parent_input: &mut ParserInput<'i>,
     content: &'i str,
@@ -41,7 +51,7 @@ where
 pub fn parse_nested_document_at<'i>(
     parent_input: &mut ParserInput<'i>,
     content: &'i str,
-) -> Result<Vec<Element>> {
+) -> Result<Vec<Element<'i>>> {
     parse_child_with_depth_at(parent_input, content, |child_input| {
         Ok(parse_document_input(child_input))
     })

@@ -5,35 +5,35 @@ use crate::parser::at::utils::{
 use finemark_ast::{Element, HeadingElement, Span};
 use winnow::Result;
 
-pub(crate) fn at_h1_parser(parser_input: &mut ParserInput) -> Result<Element> {
+pub(crate) fn at_h1_parser<'i>(parser_input: &mut ParserInput<'i>) -> Result<Element<'i>> {
     at_heading_parser(parser_input, "h1", 1)
 }
 
-pub(crate) fn at_h2_parser(parser_input: &mut ParserInput) -> Result<Element> {
+pub(crate) fn at_h2_parser<'i>(parser_input: &mut ParserInput<'i>) -> Result<Element<'i>> {
     at_heading_parser(parser_input, "h2", 2)
 }
 
-pub(crate) fn at_h3_parser(parser_input: &mut ParserInput) -> Result<Element> {
+pub(crate) fn at_h3_parser<'i>(parser_input: &mut ParserInput<'i>) -> Result<Element<'i>> {
     at_heading_parser(parser_input, "h3", 3)
 }
 
-pub(crate) fn at_h4_parser(parser_input: &mut ParserInput) -> Result<Element> {
+pub(crate) fn at_h4_parser<'i>(parser_input: &mut ParserInput<'i>) -> Result<Element<'i>> {
     at_heading_parser(parser_input, "h4", 4)
 }
 
-pub(crate) fn at_h5_parser(parser_input: &mut ParserInput) -> Result<Element> {
+pub(crate) fn at_h5_parser<'i>(parser_input: &mut ParserInput<'i>) -> Result<Element<'i>> {
     at_heading_parser(parser_input, "h5", 5)
 }
 
-pub(crate) fn at_h6_parser(parser_input: &mut ParserInput) -> Result<Element> {
+pub(crate) fn at_h6_parser<'i>(parser_input: &mut ParserInput<'i>) -> Result<Element<'i>> {
     at_heading_parser(parser_input, "h6", 6)
 }
 
-fn at_heading_parser(
-    parser_input: &mut ParserInput,
+fn at_heading_parser<'i>(
+    parser_input: &mut ParserInput<'i>,
     keyword: &'static str,
     level: u8,
-) -> Result<Element> {
+) -> Result<Element<'i>> {
     let head = parse_at_head(parser_input, keyword)?;
     let body = parse_optional_document_body(
         parser_input,

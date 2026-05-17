@@ -7,7 +7,7 @@ use winnow::combinator::{preceded, repeat};
 use winnow::prelude::*;
 use winnow::stream::Location as StreamLocation;
 
-pub fn token_paragraph_break_parser(parser_input: &mut ParserInput) -> Result<Element> {
+pub fn token_paragraph_break_parser<'i>(parser_input: &mut ParserInput<'i>) -> Result<Element<'i>> {
     let start = parser_input.current_token_start();
     line_break(parser_input)?;
     space0.parse_next(parser_input)?;

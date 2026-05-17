@@ -73,7 +73,7 @@ fn parameter_order_preserved() {
     let Element::HLine(h) = &elems[0] else {
         panic!("expected HLine")
     };
-    let keys: Vec<&str> = h.parameters.keys().map(String::as_str).collect();
+    let keys: Vec<&str> = h.parameters.keys().copied().collect();
     assert_eq!(keys, ["z", "a", "m"]);
 }
 

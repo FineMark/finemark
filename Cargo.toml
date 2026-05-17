@@ -3,7 +3,7 @@ members = ["crates/*", "xtask"]
 resolver = "3"
 
 [workspace.package]
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Levi Laine <shiueo.csh@gmail.com>"]
 repository = "https://github.com/FineMark/finemark"
 description = "Write structured documents, cleanly."
@@ -16,8 +16,8 @@ readme = "README.md"
 
 [workspace.dependencies]
 # Internal crates
-finemark-ast = { path = "crates/finemark-ast", version = "0.1.1" }
-finemark-parser = { path = "crates/finemark-parser", version = "0.1.1" }
+finemark-ast = { path = "crates/finemark-ast", version = "0.1.2" }
+finemark-parser = { path = "crates/finemark-parser", version = "0.1.2" }
 
 # External dependencies
 winnow = { version = "1.0.3", features = ["simd"] }

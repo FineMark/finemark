@@ -37,7 +37,7 @@ impl<'i> InputSource<'i> {
     pub fn child_source_for_content(&self, content: &'i str) -> Self {
         let parent_ptr = self.original.as_ptr() as usize;
         let child_ptr = content.as_ptr() as usize;
-        
+
         // Pointer arithmetic to find the relative offset within this slice
         let logical_start = child_ptr - parent_ptr;
         Self::new_at(content, self.base + logical_start)
@@ -221,11 +221,11 @@ mod tests {
     fn test_child_source_offset() {
         let input = "0123456789";
         let source = InputSource::new_at(input, 100);
-        
+
         // "567" is at relative offset 5
         let child_text = &input[5..8];
         let child_source = source.child_source_for_content(child_text);
-        
+
         // Absolute offset should be 100 (base) + 5 (relative) = 105
         assert_eq!(child_source.current_token_start(), 105);
     }
@@ -235,11 +235,11 @@ mod tests {
         // "한글" is 6 bytes (3 bytes each)
         let input = "한글 world";
         let source = InputSource::new_at(input, 1000);
-        
+
         // "world" starts after 6 bytes of "한글" and 1 space = 7 bytes
         let child_text = &input[7..];
         let child_source = source.child_source_for_content(child_text);
-        
+
         assert_eq!(child_source.current_token_start(), 1007);
     }
 }

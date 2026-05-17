@@ -8,12 +8,15 @@ use winnow::prelude::*;
 use winnow::stream::Location as StreamLocation;
 use winnow::token::literal;
 
-pub(crate) fn parse_text_style(
-    parser_input: &mut ParserInput,
+pub(crate) fn parse_text_style<'i, F>(
+    parser_input: &mut ParserInput<'i>,
     delimiter: &'static str,
     guard: ParseGuard,
-    make_element: fn(TextStyleElement) -> Element,
-) -> Result<Element> {
+    make_element: F,
+) -> Result<Element<'i>>
+where
+    F: FnOnce(TextStyleElement<'i>) -> Element<'i>,
+{
     if parser_input.state.is_guard_active(guard) {
         return Err(winnow::error::ContextError::new());
     }

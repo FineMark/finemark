@@ -13,37 +13,37 @@ pub use table::*;
 use serde::Serialize;
 
 #[derive(Debug, Clone, Serialize)]
-pub enum Element {
+pub enum Element<'i> {
     // Inline elements
-    Text(TextElement),
-    Comment(CommentElement),
-    Escape(EscapeElement),
-    Error(ErrorElement),
-    Link(LinkElement),
-    InlineCode(InlineCodeElement),
-    TeX(TeXElement),
-    Bold(TextStyleElement),
-    Italic(TextStyleElement),
-    Strikethrough(TextStyleElement),
-    Underline(TextStyleElement),
-    Superscript(TextStyleElement),
-    Subscript(TextStyleElement),
+    Text(TextElement<'i>),
+    Comment(CommentElement<'i>),
+    Escape(EscapeElement<'i>),
+    Error(ErrorElement<'i>),
+    Link(LinkElement<'i>),
+    InlineCode(InlineCodeElement<'i>),
+    TeX(TeXElement<'i>),
+    Bold(TextStyleElement<'i>),
+    Italic(TextStyleElement<'i>),
+    Strikethrough(TextStyleElement<'i>),
+    Underline(TextStyleElement<'i>),
+    Superscript(TextStyleElement<'i>),
+    Subscript(TextStyleElement<'i>),
     SoftBreak(SoftBreakElement),
     HardBreak(HardBreakElement),
 
     // Block elements
-    Heading(HeadingElement),
-    BlockQuote(BlockQuoteElement),
-    List(ListElement),
-    HLine(HLineElement),
-    CodeBlock(CodeBlockElement),
-    Table(TableElement),
-    TableRow(TableRowElement),
-    TableColumn(TableColumnElement),
+    Heading(HeadingElement<'i>),
+    BlockQuote(BlockQuoteElement<'i>),
+    List(ListElement<'i>),
+    HLine(HLineElement<'i>),
+    CodeBlock(CodeBlockElement<'i>),
+    Table(TableElement<'i>),
+    TableRow(TableRowElement<'i>),
+    TableColumn(TableColumnElement<'i>),
     ParagraphBreak(ParagraphBreakElement),
 }
 
-impl Element {
+impl Element<'_> {
     pub fn span(&self) -> &crate::Span {
         match self {
             Element::Text(element) => &element.span,

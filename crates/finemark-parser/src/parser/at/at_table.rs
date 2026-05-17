@@ -3,16 +3,16 @@ use crate::parser::at::utils::{
     AfterClosePolicy, BodyWhitespacePolicy, ParsedAtBody, parse_at_head,
     parse_optional_document_body,
 };
-use crate::parser::utils::parse_optional_brace_body;
-use finemark_ast::{
-    Element, ErrorElement, Span, TableColumnElement, TableElement, TableRowElement,
-};
+use crate::parser::utils::{with_body, with_depth};
+use finemark_ast::{Element, Span, TableColumnElement, TableElement, TableRowElement};
 use winnow::Result;
-use winnow::combinator::repeat;
+use winnow::ascii::multispace0;
+use winnow::combinator::opt;
 use winnow::prelude::*;
-use winnow::stream::{Location as StreamLocation, Stream};
+use winnow::stream::Location as StreamLocation;
+use winnow::token::literal;
 
-pub(crate) fn at_table_parser(parser_input: &mut ParserInput) -> Result<Element> {
+pub(crate) fn at_table_parser<'i>(parser_input: &mut ParserInput<'i>) -> Result<Element<'i>> {
     let head = parse_at_head(parser_input, "table")?;
     let body = parse_table_body(parser_input)?;
 
@@ -28,11 +28,11 @@ pub(crate) fn at_table_parser(parser_input: &mut ParserInput) -> Result<Element>
     }))
 }
 
-fn parse_table_body(parser_input: &mut ParserInput) -> Result<ParsedAtBody> {
+fn parse_table_body<'i>(parser_input: &mut ParserInput<'i>) -> Result<ParsedAtBody<'i>> {
     parse_structural_body(parser_input, at_row_parser)
 }
 
-fn at_row_parser(parser_input: &mut ParserInput) -> Result<Element> {
+fn at_row_parser<'i>(parser_input: &mut ParserInput<'i>) -> Result<Element<'i>> {
     let head = parse_at_head(parser_input, "row")?;
     let body = parse_row_body(parser_input)?;
 
@@ -48,23 +48,19 @@ fn at_row_parser(parser_input: &mut ParserInput) -> Result<Element> {
     }))
 }
 
-fn parse_row_body(parser_input: &mut ParserInput) -> Result<ParsedAtBody> {
+fn parse_row_body<'i>(parser_input: &mut ParserInput<'i>) -> Result<ParsedAtBody<'i>> {
     parse_structural_body(parser_input, at_column_parser)
 }
 
 fn parse_structural_body<'i, F>(
     parser_input: &mut ParserInput<'i>,
     mut child_parser: F,
-) -> Result<ParsedAtBody>
+) -> Result<ParsedAtBody<'i>>
 where
-    F: FnMut(&mut ParserInput<'i>) -> Result<Element>,
+    F: FnMut(&mut ParserInput<'i>) -> Result<Element<'i>>,
 {
-    let body = parse_optional_brace_body(
-        parser_input,
-        BodyWhitespacePolicy::TrimAsciiWhitespace,
-        AfterClosePolicy::ConsumeWhitespace,
-    )?;
-    let Some(body) = body else {
+    multispace0.parse_next(parser_input)?;
+    let Some(open_span) = opt(parse_body_open).parse_next(parser_input)? else {
         let end = parser_input.previous_token_end();
         return Ok(ParsedAtBody {
             children: Vec::new(),
@@ -74,39 +70,45 @@ where
         });
     };
 
-    let mut child_input = ParserInput {
-        input: parser_input.input.child_source_for_content(body.content),
-        state: parser_input.state.clone(),
-    };
+    let children = with_depth(parser_input, |input| {
+        with_body(input, |input| {
+            let mut children = Vec::new();
+            loop {
+                multispace0.parse_next(input)?;
+                if input.input.starts_with('}') {
+                    break;
+                }
+                children.push(child_parser(input)?);
+            }
+            Ok(children)
+        })
+    })?;
 
-    // Structural bodies first isolate the balanced brace content, then let the
-    // owning grammar decide which child elements are valid inside that slice.
-    let children = repeat(0.., &mut child_parser).parse_next(&mut child_input)?;
-    let mut children: Vec<Element> = children;
-    if !child_input.input.is_empty() {
-        let start = child_input.current_token_start();
-        let value = child_input
-            .input
-            .peek_slice(child_input.input.eof_offset())
-            .to_string();
-        child_input.input.finish();
-        let end = child_input.previous_token_end();
-        children.push(Element::Error(ErrorElement {
-            span: Span { start, end },
-            value,
-        }));
-    }
-    parser_input.state = child_input.state;
+    multispace0.parse_next(parser_input)?;
+    let close_start = parser_input.current_token_start();
+    literal("}").parse_next(parser_input)?;
+    let close_end = parser_input.previous_token_end();
+    multispace0.parse_next(parser_input)?;
 
     Ok(ParsedAtBody {
         children,
-        open_span: Some(body.open_span),
-        close_span: Some(body.close_span),
-        end: body.end,
+        open_span: Some(open_span),
+        close_span: Some(Span {
+            start: close_start,
+            end: close_end,
+        }),
+        end: close_end,
     })
 }
 
-fn at_column_parser(parser_input: &mut ParserInput) -> Result<Element> {
+fn parse_body_open(parser_input: &mut ParserInput<'_>) -> Result<Span> {
+    let start = parser_input.current_token_start();
+    literal("{").parse_next(parser_input)?;
+    let end = parser_input.previous_token_end();
+    Ok(Span { start, end })
+}
+
+fn at_column_parser<'i>(parser_input: &mut ParserInput<'i>) -> Result<Element<'i>> {
     let head = parse_at_head(parser_input, "column")?;
     let body = parse_optional_document_body(
         parser_input,

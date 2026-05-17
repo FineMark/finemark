@@ -4,7 +4,7 @@ use finemark_ast::{Element, HLineElement, Span};
 use winnow::Result;
 use winnow::stream::Location as StreamLocation;
 
-pub(crate) fn at_hline_parser(parser_input: &mut ParserInput) -> Result<Element> {
+pub(crate) fn at_hline_parser<'i>(parser_input: &mut ParserInput<'i>) -> Result<Element<'i>> {
     let head = parse_at_head(parser_input, "hline")?;
     let end = parser_input.previous_token_end();
 

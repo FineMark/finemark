@@ -6,7 +6,7 @@ use winnow::prelude::*;
 use winnow::stream::Location as StreamLocation;
 use winnow::token::literal;
 
-pub fn token_asterisk_parser(parser_input: &mut ParserInput) -> Result<Element> {
+pub fn token_asterisk_parser<'i>(parser_input: &mut ParserInput<'i>) -> Result<Element<'i>> {
     // Closing delimiters must be left for their owning style parser.
     if parser_input.state.is_guard_active(ParseGuard::Bold) && parser_input.input.starts_with("**")
     {
@@ -24,6 +24,6 @@ pub fn token_asterisk_parser(parser_input: &mut ParserInput) -> Result<Element> 
 
     Ok(Element::Text(TextElement {
         span: Span { start, end },
-        value: "*".to_string(),
+        value: "*",
     }))
 }

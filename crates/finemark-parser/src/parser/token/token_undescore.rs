@@ -6,7 +6,7 @@ use winnow::prelude::*;
 use winnow::stream::Location as StreamLocation;
 use winnow::token::literal;
 
-pub fn token_underscore_parser(parser_input: &mut ParserInput) -> Result<Element> {
+pub fn token_underscore_parser<'i>(parser_input: &mut ParserInput<'i>) -> Result<Element<'i>> {
     // Closing delimiters must be left for their owning style parser.
     if parser_input.state.is_guard_active(ParseGuard::Underline)
         && parser_input.input.starts_with("__")
@@ -20,6 +20,6 @@ pub fn token_underscore_parser(parser_input: &mut ParserInput) -> Result<Element
 
     Ok(Element::Text(TextElement {
         span: Span { start, end },
-        value: "_".to_string(),
+        value: "_",
     }))
 }
