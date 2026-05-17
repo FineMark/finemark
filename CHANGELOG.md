@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-05-17
+
 ### Added
 
 - Added the initial parser pipeline structure with `document`, `block`, `markdown`, `element`, `escape`, `token`, and parser utility modules.
@@ -25,6 +27,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added location-aware parser fixture tests with checked-in `.fm` inputs and `.json` expected outputs.
 - Added fixture newline normalization so CRLF checkouts compare against LF-based spans consistently.
 - Added parser coverage for bare `\r` as text rather than a FineMark line break.
+- Added optional whitespace between `@keyword`, `[params]`, and `{body}` so all of `@link[url]{...}`, `@link [url] {…}`, and multi-line forms parse as the same grammar.
+- Added `@` as a terminator character in `text_parser` so that `@command` sequences inside body content are dispatched to AT parsers instead of consumed as plain text.
+- Added `token_at_parser` as a fallback for unrecognised `@` markers, emitting a single `@` `Text` node and allowing the document parser to continue.
+- Added `gen_expected` example for regenerating fixture expected JSON files from `.fm` inputs.
+- Added crates.io version badges for `finemark-ast` and `finemark-parser` to the README.
 
 ### Changed
 
@@ -39,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed unknown `@name[...]` forms to fall back to plain text instead of parser errors.
 - Changed `@table` and `@row` parsing so each structural command owns its valid child grammar.
 - Changed `@quote` AST to remove obsolete markdown blockquote marker spans.
+- Changed the `@` branch fallback in `element_parser` from `text_parser` to `token_at_parser`.
 
 ### Removed
 
@@ -49,3 +57,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Notes
 
 - Token parsers for future inline constructs remain in place even when not yet wired into the active grammar.
+- Recursion depth is capped at 16 levels; AT command bodies that exceed the limit fall back to plain text.
+
+[0.1.0]: https://github.com/FineMark/finemark/releases/tag/v0.1.0
